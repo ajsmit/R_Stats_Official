@@ -16,11 +16,11 @@ A prerequisite for this course is a basic proficiency in using R [\@R2017]. The 
 
 ## References
 
-R Core Team. 2017. R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. (Link)[<https://www.R-project.org/>].
+R Core Team. 2017. R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. [Link](https://www.R-project.org).
 
 # Overview of Statistical Methods
 
-You will encounter the following statistics in this module:
+You will encounter the following statistics in this module (in the process of being updated):
 
 -   `adonis2()` -- Permutational Multivariate Analysis of Variance Using Distance Matrices
 
