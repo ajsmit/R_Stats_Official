@@ -12,7 +12,7 @@ This is a workshop about the practice of the basic statistics used by biologists
 
 # Prerequisites
 
-A prerequisite for this course is a basic proficiency in using R [@R2017]. The necessary experience will have been gained from completing the [Intro R Workshop: Data Manipulation, Analysis, and Graphing](https://ajsmit.github.io/Intro_R_Official/) Workshop that was part of your BCB Core Honours module (i.e. Biostatistics). You will also need a laptop with R and RStudio installed as per the instructions provided in that workshop. If you do not have a personal laptop, most computers in the 5th floor lab will be correctly set up for this purpose.
+A prerequisite for this course is a basic proficiency in using R [\@R2017]. The necessary experience will have been gained from completing the [Intro R Workshop: Data Manipulation, Analysis, and Graphing](https://ajsmit.github.io/Intro_R_Official/) Workshop that was part of your BCB Core Honours module (i.e. Biostatistics). You will also need a laptop with R and RStudio installed as per the instructions provided in that workshop. If you do not have a personal laptop, most computers in the 5th floor lab will be correctly set up for this purpose.
 
 ## References
 
@@ -43,3 +43,13 @@ These links point to online resources such as datasets and R scripts in support 
 -   [t-Tests](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/t-Tests.ipynb)
 
 -   [ANOVA](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/ANOVA.ipynb)
+
+## Day 3
+
+-   [Regression](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Regression.ipynb)
+
+-   [Correlation](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Correlation.ipynb)
+
+-   [Confidence intervals](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Confidence.ipynb)
+
+-   [Assumptions](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Assumptions.ipynb)
