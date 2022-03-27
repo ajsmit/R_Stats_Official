@@ -28,7 +28,7 @@ These links point to online resources such as datasets and R scripts in support 
 
 ## Day 1
 
--   [About](https://ajsmit.github.io/R_Stats_Official/01-about.html)
+-   [About](https://ajsmit.github.io/R_Stats_Official/01-introduction.html)
 
 -   [Data](https://ajsmit.github.io/R_Stats_Official/02-data.html)
 

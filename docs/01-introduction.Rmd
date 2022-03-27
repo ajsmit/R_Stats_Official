@@ -1,13 +1,13 @@
 ---
-title: "About"
+title: "Introduction"
 author: "AJ Smit"
 date: "`r Sys.Date()`"
 output:
   rmdformats::readthedown:
-  self_contained: false
-  cards: false
+  self_contained: true
+  cards: true
   thumbnails: true
-  lightbox: false
+  lightbox: true
   gallery: true
   use_bookdown: true
   highlight: tango
