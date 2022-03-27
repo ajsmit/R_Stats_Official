@@ -38,7 +38,7 @@ These links point to online resources such as datasets and R scripts in support 
 
 -   [Descriptive statistics](https://ajsmit.github.io/R_Stats_Official/03-descriptive.html)
 
--   [t-Tests](https://ajsmit.github.io/R_Stats_Official/06-t-tests.html)
+-   [t-Tests](https://ajsmit.github.io/R_Stats_Official/06-t_tests.html)
 
 -   [ANOVA](https://ajsmit.github.io/R_Stats_Official/07-anova.html)
 
