@@ -1,4 +1,4 @@
-# Introduction
+# About
 
 > *"An approximate answer to the right problem is worth a good deal more than an exact answer to an approximate problem."*
 >
