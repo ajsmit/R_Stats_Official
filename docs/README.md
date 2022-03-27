@@ -26,6 +26,8 @@ You will encounter the following statistics in this module (in the process of be
 
 These links point to online resources such as datasets and R scripts in support of the lecture material. It is essential that you work through these examples and workflows.
 
+------------------------------------------------------------------------
+
 # Course Content
 
 ## Day 1
