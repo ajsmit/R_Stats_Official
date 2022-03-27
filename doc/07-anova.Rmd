@@ -1,0 +1,537 @@
+---
+title: "Analysis of Variance"
+author: "AJ Smit"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::readthedown:
+  self_contained: false
+  cards: false
+  thumbnails: true
+  lightbox: false
+  gallery: true
+  use_bookdown: true
+  highlight: tango
+---
+
+<!--- # ANOVA --->
+
+> *"He uses statistics as a drunken man uses lamp posts---for support rather than for illumination."*
+>
+> --- Marissa Mayer
+
+```{r prelim-opts, echo=FALSE}
+knitr::opts_chunk$set(
+  comment = "R>", 
+  warning = FALSE, 
+  message = FALSE,
+  out.width = '70%'
+)
+```
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(ggpubr)
+```
+
+Whole big books have been written about Analysis of Variance (ANOVA). Although there are many ANOVA experimental designs available, biologists are taught to pay special attention to the design of experiments, and generally make sure that the experiments are fully factorial (in the case of two-way or higher ANOVAs) and balanced. For this reason we will focus in this Introductory Statistics course on one-way and factorial ANOVAs only.
+
+As *t*-tests, ANOVAs require that some assumptions are met:
+
+-   Normally distributed data
+-   Homogeneity of variances
+-   Independence of data
+-   In our case, we will encourage also that the data are balanced
+
+If some of the above assumptions are violated, then your course of action is either to transform the data (if non-normal) or to use a generalised linear model (also when non-normal), or to use a linear mixed model (when the assumption on non-independence cannot be guaranteed). We will get to some of these methods in later chapters. Linked to the above, ANOVAs are also sensitive to the presence of outliers (see our earlier discussion about the mean and how it differs from the median), so we need to ensure that outliers are not present (they can be removed, and there are many ways of finding them and eliminating them). If outliers are an important feature of the data, then a non-parametric test can be used, or some other test that works well with extreme values can be applied.
+
+Rather than talking about *t*-tests and ANOVAs as separate things, let us acknowledge that they are similar ways of asking the same question. That question being, are the means of these two or more things we want to compare different, or the same? At this stage it is important to note that the independent variable is categorical (i.e. a factor denoting two or more different treatments or sampling conditions) and that the dependent variable is continuous. You may perhaps be more familiar with this question when it is presented as a set of hypotheses.
+
+> H0: Group A is not different from group B.
+>
+> H1: Group A is different from group B.
+
+This is a scientific question in the simplest sense. Often, for basic inquiries such as that posed above, we need to see if one group differs significantly from another. The way in which we accomplish this is by looking at the mean and variance within a set of data compared against another similar set. In order to do so appropriately however we need to first assume that both sets of data are normally distributed, and that the variance found within each set of data is similar. These are the two primary assumptions we learned about in Chapter 6, and if they are met then we may use parametric tests. We will learn in Chapter 9 what we can do if these assumptions are not meant and we cannot adequately transform our data, meaning we will need to use non-parametric tests.
+
+## Remember the *t*-test
+
+As you know, a *t*-test is used when we want to compare two different sample sets against one another. This is also known as a two-factor or two level test. When one wants to compare multiple (more than two) sample sets against one another an ANOVA is required (see below). Remember how to perform a *t*-test in R: we will revisit this test using the `chicks` data, but only for Diets 1 and 2 from day 21.
+
+```{r}
+# First grab the data
+chicks <- as_tibble(ChickWeight)
+
+# Then subset out only the sample sets to be compared
+chicks_sub <- chicks %>% 
+  filter(Diet %in% c(1, 2), Time == 21)
+```
+
+Once we have filtered our data we may now perform the *t*-test. Traditionally this would be performed with `t.test()`, but recent developments in R have made any testing for the comparison of means more convenient by wrapping everything up into the one single function `compare_means()`. We may use only this one single function for many of the tests we will perform in this chapter as well as Chapter 9. To use `compare_means()` for a *t*-test we must simply specify this in the `method` argument, as seen below:
+
+```{r}
+compare_means(weight ~ Diet, data = chicks_sub, method = "t.test")
+```
+
+As one may recall from the previous chapter, whenever we want to give a formula to a function in R, we use the `~`. The formula used above, `weight ~ Diet`, reads in plain English as "weight as a function of diet". This is perhaps easier to understand as "Y as a function of X". This means that we are assuming whatever is to the left of the `~` is the dependant variable, and whatever is to the right is the independent variable. We then tell `compare_means()` to run a *t*-test on our `chicks_sub` dataframe and it does the rest. We see in the output above that this function gives us a rather tidy read-out of the information we require to test a potential hypothesis. Let's take a moment to look through the help file for this function and see what all of this means. Did the Diet 1 and 2 produce significantly fatter birds?
+
+## ANOVA
+
+In the `chicks` data we have four diets, not only two as in the *t*-test example just performed. Why not then simply do a *t*-test multiple times, once for each pair of diets given to the chickens? The problem is that the chances of committing a Type I error increases as more multiple comparisons are done. So, the overall chance of rejecting the null hypothesis increases. Why? If one sets $\alpha=0.05$ (the significance level below which the null hypothesis is no longer accepted), one will still reject the null hypothesis 5% of the time when it is in fact true (i.e. when there is no difference between the groups). When many pairwise comparisons are made, the probability of rejecting the null hypothesis at least once is higher because we take this 5% risk each time we repeat a *t*-test. In the case of the chicken diets, we would have to perform six *t*-tests, and the error rate would increase to slightly less than $6\times5\%$. If you insist in creating more work for yourself and do *t*-tests many times, one way to overcome the problem of committing Type I errors that stems from multiple comparisons is to apply a Bonferroni correction.
+
+Or better still, we do an ANOVA that controls for these Type I errors so that it remains at 5%.
+
+A suitable null hypothesis for our chicken weight data is:
+
+$$H_{0}:\mu_{1}=\mu_{2}=\mu_{3}=\mu_{4}$$ where $\mu_{1...4}$ are the means of the four diets.
+
+At this point I was very tempted to put many equations here, but I ommitted them for your sake. Let us turn to some examples.
+
+### Single factor
+
+We continue with the chicken data. The *t*-test showed that Diets 1 and 2 resulted in the same chicken masses at the end of the experiment at Day 21. What about the other two diets? Our null hypothesis is that, at Day 21, $\mu_{1}=\mu_{2}=\mu_{3}=\mu_{4}$. Is there a statistical difference between chickens fed these four diets, or do we retain the null hypothesis? The R function for an ANOVA is `aov()`. To look for significant differences between all four diets on the last day of sampling we use this one line of code:
+
+```{r}
+chicks.aov1 <- aov(weight ~ Diet, data = filter(chicks, Time == 21))
+summary(chicks.aov1)
+```
+
+> **Task:** What does the outcome say about the chicken masses? Which ones are different from each other?
+>
+> **Task:** Devise a graphical display of this outcome.
+
+If this seems too easy to be true, it's because we aren't quite done yet. You could use your graphical display to eyeball where the significant differences are, or we can turn to a more 'precise' approach. The next step one could take is to run a Tukey HSD test on the results of the ANOVA by wrapping `tukeyHSD()` around `aov()`:
+
+```{r}
+TukeyHSD(chicks.aov1)
+```
+
+The output of `tukeyHSD()` shows us that pairwise comparisons of all of the groups we are comparing.
+
+> **Task:** Look at the help file for this function to better understand what the output means.
+>
+> **Task:** How does one interpret the results? What does this tell us about the effect that that different diets has on the chicken weights at Day 21?
+>
+> **Task:** Figure out a way to plot the Tukey HSD outcomes.
+>
+> **Task:** Why does the ANOVA return a significant result, but the Tukey test shows that not all of the groups are significantly different from one another?
+>
+> **Task:** Produce a graphical display of the Tukey HSD result.
+
+<!-- ```{r} -->
+
+<!-- # plot(TukeyHSD(chicks.aov)) -->
+
+<!-- ``` -->
+
+Now that we've seen how to perform a single factor ANOVA, let's watch some animations that highlight how certain aspects of our data may affect our results.
+
+-   When the [sample size](../Resources/aov_n_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="../Resources/aov_n_slide.mp4" type="video/mp4"> </video> changes
+-   When the [mean](../Resources/aov_mean_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="../Resources/aov_mean_slide.mp4" type="video/mp4"> </video> of one sample changes
+-   When the [variance](../Resources/aov_sd_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="../Resources/aov_sd_slide.mp4" type="video/mp4"> </video> of one sample increases
+
+```{r anova-plot1, echo=FALSE, include=FALSE, eval=FALSE}
+library(tidyverse)
+library(animation)
+
+# Function that serves as the basis for the sliding ANOVA figures
+slide_fig <- function(df){
+  
+# Calculate basic stats
+sub_stats <- df %>% 
+  group_by(title, sample) %>% 
+  summarise(sub_mean = round(mean(dat), 2),
+            sub_sd = round(sd(dat), 2),
+            sub_n = round(n(), 0))
+
+# Crerate fancy dataframe for use in ggplot2 text printing
+sub_stats_print <- sub_stats %>% 
+  gather(key = stat, value = value, -sample, -title) %>% 
+  mutate(y = c(rep(18.9, 3), rep(17.9, 3), rep(16.9, 3)),
+         stat_word = c(rep("mean = ", 3), rep("sd = ", 3), rep("n = ", 3)),
+         stat_print = paste0(stat_word, value))
+
+# Run ANOVA
+sub_aov <- summary(aov(dat ~ sample, data = df))
+
+# Create final stats for printing
+df_val_print <- paste0("d.f. = ", sub_aov[[1]]$Df[1])
+ss_val_print <- paste0("SS = ", round(sub_aov[[1]]$`Sum Sq`[1], 2))
+f_val_print <-  paste0("F = ", round(sub_aov[[1]]$`F value`[1], 2))
+if(sub_aov[[1]]$`Pr(>F)`[1] < 0.001) {
+  p_val_print <- "p < 0.001"
+} else {
+  p_val_print <- paste0("p = ", round(sub_aov[[1]]$`Pr(>F)`[1], 3))
+}
+
+# Create the figure
+aovb <- ggplot(data = df, aes(x = sample, y = dat, colour = sample)) +
+  geom_hline(aes(yintercept = mean(df$dat)), size = 1, linetype = "dashed") +
+  geom_violin(fill = "grey70", alpha = 0.8) + 
+  geom_boxplot(width = 0.1, colour = "black", fill = "white", notch = T) +
+  geom_jitter(shape = 16, width = 0.01, colour = "red", alpha = 0.2) +
+  geom_label(data = sub_stats_print, aes(label = stat_print, y = y), size = 4,
+             label.padding = unit(0.25, "lines"), fontface = "bold") +
+  scale_y_continuous(limits = c(0, 19)) +
+  labs(title = sub_stats_print$title,
+       subtitle = paste(df_val_print, ss_val_print, 
+                        f_val_print, p_val_print, sep = ", "),
+       x = "Sample",
+       y = "value") +
+  theme_pubclean() +
+  theme(legend.position = "none")
+print(aovb)
+}
+```
+
+```{r anova-plot2, echo=FALSE, include=FALSE, eval=FALSE}
+# Create random data
+set.seed(666)
+random_n_dat <- data.frame(A = rnorm(100, 10.0, 2), 
+                           B = rnorm(100, 10.2, 2),
+                           C = rnorm(100, 10.4, 2),
+                           title = "ANOVA: increasing n")
+
+# tester...
+# i <- 20
+
+# The function to animate increasing n
+aov_n_fig <- function(i) {
+# Create animated dataframe
+sub_n_dat <- random_n_dat %>% 
+  slice(1:i) %>% 
+  gather(key = "sample", value = "dat", -title)
+# Calculate stats and output figure
+slide_fig(sub_n_dat)
+}
+
+# Create animation of the histogram
+animate_aov_n <- function() {
+  lapply(c(seq(30, 99, by = 1), rep(100, 30),
+           seq(99, 31, by = -1), rep(30, 30)), 
+         function(i) {
+    aov_n_fig(i)
+  })
+}
+
+# system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
+system.time(saveVideo(animate_aov_n(), interval = 0.1, ani.width = 600, video.name = "../Resources/aov_n_slide.avi")) # ~73 seconds
+```
+
+```{r anova-plot3, echo=FALSE, include=FALSE, eval=FALSE}
+# Create random data
+set.seed(666)
+random_mean_dat <- data.frame(A = rnorm(100, 10.1, 2), 
+                         B = rnorm(100, 10.2, 2),
+                         C = rnorm(100, 10.3, 2),
+                         title = "ANOVA: increasing mean")
+
+# tester...
+# i <- 1
+
+# The function to animate increasing mean
+aov_mean_fig <- function(i) {
+# Create animated dataframe
+sub_mean_dat <- random_mean_dat %>% 
+  mutate(B = B-i) %>% 
+  gather(key = "sample", value = "dat", -title)
+# Calculate stats and output figure
+slide_fig(sub_mean_dat)
+}
+
+# Create animation of the histogram
+animate_aov_mean <- function() {
+  lapply(c(seq(0, -0.99, by = -0.01), rep(-1, 30),
+           seq(-0.99, -0.01, by = 0.01), rep(0, 30)), 
+         function(i) {
+    aov_mean_fig(i)
+  })
+}
+
+# system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
+system.time(saveVideo(animate_aov_mean(), interval = 0.1, ani.width = 600, video.name = "../Resources/aov_mean_slide.avi")) # ~105 seconds
+```
+
+```{r anova-plot4, echo=FALSE, include=FALSE, eval=FALSE}
+# Create random data
+set.seed(666)
+random_sd_dat <- data.frame(A = rnorm(100, 9.8, 1.5), 
+                         B = rnorm(100, 10.4, 1.5),
+                         C = rnorm(100, 10.2, 1.5),
+                         title = "ANOVA: increasing SD")
+
+# tester...
+# i <- 2.0
+
+# The function to animate increasing SD
+aov_sd_fig <- function(i) {
+# Create dataframe for sliding figure
+sub_sd_dat <- random_sd_dat %>% 
+  mutate(C = (C*i)-10.2*(i-1)) %>% 
+  gather(key = "sample", value = "dat", -title) %>% 
+  mutate(sample = as.factor(sample))
+# Calculate stats and output figure
+slide_fig(sub_sd_dat)
+}
+
+# Create animation of the histogram
+animate_aov_sd <- function() {
+  lapply(c(seq(1.00, 1.98, by = 0.02), rep(2.00, 30),
+           seq(1.98, 1.02, by = -0.02), rep(1.00, 30)), 
+         function(i) {
+    aov_sd_fig(i)
+  })
+}
+
+# system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
+system.time(saveVideo(animate_aov_sd(), interval = 0.1, ani.width = 600, video.name = "../Resources/aov_sd_slide.avi")) # ~89 seconds
+```
+
+### Multiple factors
+
+What if we have multiple grouping variables, and not just one? In the case of the chicken data, there is also time that seems to be having an effect.
+
+> **Task:** How is time having an effect?
+>
+> **Task:** What hypotheses can we construct around time?
+
+Let us look at some variations around questions concerning time. We might ask, at a particular time step, are there differences amongst the effect due to diet on chicken mass? Let's see when diets are starting the have an effect by examining the outcomes at times 0, 2, 10, and 21:
+
+```{r}
+summary(aov(weight ~ Diet, data = filter(chicks, Time %in% c(0))))
+summary(aov(weight ~ Diet, data = filter(chicks, Time %in% c(2))))
+summary(aov(weight ~ Diet, data = filter(chicks, Time %in% c(10))))
+summary(aov(weight ~ Diet, data = filter(chicks, Time %in% c(21))))
+```
+
+> **Task:** What do you conclude from the above series of ANOVAs?
+>
+> **Task:** What problem is associated with running multiple tests in the way that we have done here?
+
+Or we may ask, regardless of diet (i.e. disregarding the effect of diet by clumping all chickens together), is time having an effect?
+
+```{r}
+chicks.aov2 <- aov(weight ~ as.factor(Time), data = filter(chicks, Time %in% c(0, 2, 10, 21)))
+summary(chicks.aov2)
+```
+
+> **Task:** What do you conclude from the above ANOVA?
+
+Or, to save ourselves a lot of time and reduce the coding effort, we may simply run a two-way ANOVA and look at the effects of `Diet` and `Time` simultaneously. To specify the different factors we put them in our formula and separate them with a `+`:
+
+```{r}
+summary(aov(weight ~ Diet + as.factor(Time), data = filter(chicks, Time %in% c(0, 21))))
+```
+
+> **Task:** What question are we asking with the above line of code? What is the answer? Also, why did we wrap `Time` in `as.factor()`?
+
+It is also possible to look at what the interaction effect between grouping variables (i.e. in this case the effect of time on diet---does the effect of time depend on which diet we are looking at?), and not just within the individual grouping variables. To do this we replace the `+` in our formula with `*`:
+
+```{r}
+summary(aov(weight ~ Diet * as.factor(Time), data = filter(chicks, Time %in% c(4, 21))))
+```
+
+> **Task:** How do these results differ from the previous set?
+
+One may also run a post-hoc Tukey test on these results the same as for a single factor ANOVA:
+
+```{r}
+TukeyHSD(aov(weight ~ Diet * as.factor(Time), data = filter(chicks, Time %in% c(20, 21))))
+```
+
+> **Task:** Yikes! That's a massive amount of results. What does all of this mean, and why is it so verbose?
+
+<!--- #### About interaction terms --->
+
+<!-- AJS to insert stuff here -->
+
+### Examples
+
+#### Snakes!
+
+These data could be analysed by a two-way ANOVA without replication, or a repeated measures ANOVA. Here I will analyse it by using a two-way ANOVA without replication.
+
+Place and Abramson (2008) placed diamondback rattlesnakes (*Crotalus atrox*) in a "rattlebox," a box with a lid that would slide open and shut every 5 minutes. At first, the snake would rattle its tail each time the box opened. After a while, the snake would become habituated to the box opening and stop rattling its tail. They counted the number of box openings until a snake stopped rattling; fewer box openings means the snake was more quickly habituated. They repeated this experiment on each snake on four successive days, which is treated as an influential variable here. Place and Abramson (2008) used 10 snakes, but some of them never became habituated; to simplify this example, data from the six snakes that did become habituated on each day are used.
+
+First, we read in the data, making sure to convert the column named `day` to a factor. Why? Because ANOVAs work with factor independent variables, while `day` as it is encoded by default is in fact a continuous variable.
+
+```{r}
+snakes <- read_csv("../data/snakes.csv")
+snakes$day = as.factor(snakes$day)
+```
+
+The first thing we do is to create some summaries of the data. Refer to the summary statistics Chapter.
+
+```{r}
+snakes.summary <- snakes %>% 
+  group_by(day, snake) %>% 
+  summarise(mean_openings = mean(openings),
+            sd_openings = sd(openings)) %>% 
+  ungroup()
+snakes.summary
+```
+
+> **Task:** Something seems... off. What's going on here? Please explain this outcome.
+
+To fix this problem, let us ignore the grouping by both `snake` and `day`.
+
+```{r}
+snakes.summary <- snakes %>% 
+  group_by(day) %>% 
+  summarise(mean_openings = mean(openings),
+            sd_openings = sd(openings)) %>% 
+  ungroup()
+snakes.summary
+
+library(Rmisc)
+snakes.summary2 <- summarySE(data = snakes, measurevar = "openings", groupvars = c("day"))
+```
+
+Now we turn to some visual data summaries.
+
+```{r anova-plot5}
+ggplot(data = snakes, aes(x = day, y = openings)) +
+  geom_segment(data = snakes.summary2, aes(x = day, xend = day, y = openings - ci, yend = openings + ci, colour = day),
+              size = 2.0, linetype = "solid", show.legend = F) +
+  geom_boxplot(aes(fill = day), alpha = 0.6, show.legend = F) + 
+  geom_jitter(width = 0.05)
+```
+
+What are our null hypotheses?
+
+1.  H0: There is no difference between snakes with respect to the number of openings at which they habituate.
+2.  H0: There is no difference between days in terms of the number of openings at which the snakes habituate.
+
+Fit the ANOVA model to test these hypotheses:
+
+```{r}
+snakes.aov <- aov(openings ~ day + snake, data = snakes)
+summary(snakes.aov)
+```
+
+Now we need to test of the assumptions hold true (i.e. erros are normally distributed and heteroscedastic). Also, where are the differences?
+
+```{r anova-plot6}
+par(mfrow = c(2, 2))
+# Checking assumptions...
+# make a histogram of the residuals;
+# they must be normal
+snakes.res <- residuals(snakes.aov)
+hist(snakes.res, col = "red")
+
+# make a plot of residuals and the fitted values;
+# # they must be normal and homoscedastic
+plot(fitted(snakes.aov), residuals(snakes.aov), col = "red")
+
+snakes.tukey <- TukeyHSD(snakes.aov, which = "day", conf.level = 0.90)
+plot(snakes.tukey, las = 1, col = "red")
+```
+
+## Alternatives to ANOVA
+
+In the first main section of this chapter we learned how to test hypotheses based on the comparisons of means between sets of data when we were able to meet our two base assumptions. These parametric tests are preferred over non-parametric tests because they are more robust. However, when we simply aren't able to meet these assumptions we must not despair. Non-parametric tests are still useful. In this chapter we will learn how to run non-parametric tests for two sample and multiple sample datasets. To start, let's load our libraries and `chicks` data if we have not already.
+
+```{r}
+# First activate libraries
+library(tidyverse)
+library(ggpubr)
+
+# Then load data
+chicks <- as_tibble(ChickWeight)
+```
+
+With our libraries and data loaded, let's find a day in which at least one of our assumptions are violated.
+
+```{r}
+# Then check for failing assumptions
+chicks %>% 
+  filter(Time == 0) %>% 
+  group_by(Diet) %>% 
+  summarise(norm_wt = as.numeric(shapiro.test(weight)[2]),
+            var_wt = var(weight))
+```
+
+### Wilcox rank sum test
+
+The non-parametric version of a t-test is a Wilcox rank sum test. To perform this test in R we may again use `compare_means()` and specify the test we want:
+
+```{r}
+compare_means(weight ~ Diet, data = filter(chicks, Time == 0, Diet %in% c(1, 2)), method = "wilcox.test")
+```
+
+What do our results show?
+
+### Kruskall-Wallis rank sum test
+
+#### Single factor
+
+The non-parametric version of an ANOVA is a Kruskall-Wallis rank sum test. As you may have by now surmised, this may be done with `compare_means()` as seen below:
+
+```{r}
+compare_means(weight ~ Diet, data = filter(chicks, Time == 0), method = "kruskal.test")
+```
+
+As with the ANOVA, this first step with the Kruskall-Wallis test is not the last. We must again run a post-hoc test on our results. This time we will need to use `pgirmess::kruskalmc()`, which means we will need to load a new library.
+
+```{r}
+library(pgirmess)
+
+kruskalmc(weight ~ Diet, data = filter(chicks, Time == 0))
+```
+
+Let's consult the help file for `kruskalmc()` to understand what this print-out means.
+
+#### Multiple factors
+
+The water becomes murky quickly when one wants to perform multiple factor non-parametric comparison of means tests. To that end, we will not cover the few existing methods here. Rather, one should avoid the necessity for these types of tests when designing an experiment.
+
+### The SA time data
+
+```{r anova-plot7}
+sa_time <- as_tibble(read_csv("../data/SA_time.csv", col_types = list(col_double(), col_double(), col_double())))
+sa_time_long <- sa_time %>% 
+  gather(key = "term", value = "minutes") %>% 
+  filter(minutes < 300) %>% 
+  mutate(term = as.factor(term))
+
+my_comparisons <- list( c("now", "now_now"), c("now_now", "just_now"), c("now", "just_now") )
+
+ggboxplot(sa_time_long, x = "term", y = "minutes",
+          color = "term", palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+          add = "jitter", shape = "term")
+
+ggviolin(sa_time_long, x = "term", y = "minutes", fill = "term",
+         palette = c("#00AFBB", "#E7B800", "#FC4E07"),
+         add = "boxplot", add.params = list(fill = "white")) +
+  stat_compare_means(comparisons = my_comparisons, label = "p.signif") + # Add significance levels
+  stat_compare_means(label.y = 50)                                      # Add global the p-value 
+```
+
+## Exercises
+
+> **Exercise 1** Here is bunch of data for pigs raised on different diets. The experiment is similar to the chicken one. Does feed type have an effect on the mass of pigs at the end of the experiment?
+
+```{r}
+# enter the mass at the end of the experiment
+feed_1 <- c(60.8, 57.0, 65.0, 58.6, 61.7)
+feed_2 <- c(68.7, 67.7, 74.0, 66.3, 69.8)
+feed_3 <- c(102.6, 102.1, 100.2, 96.5)
+feed_4 <- c(87.9, 84.2, 83.1, 85.7, 90.3)
+
+# make a dataframe
+bacon <- as.tibble(data.frame(
+  feed = c(
+  rep("Feed 1", length(feed_1)),
+  rep("Feed 2", length(feed_2)),
+  rep("Feed 3", length(feed_3)),
+  rep("Feed 4", length(feed_4))
+  ),
+  mass = c(feed_1, feed_2, feed_3, feed_4)
+  ))
+```
+
+> **Exercise 2** Construct suitable null and alternative hypotheses for the built-in `ToothGrowth` data, and test your hypotheses using an ANOVA.
+
+```{r}
+teeth <- datasets::ToothGrowth
+```
+
+> **Exercise 3** Find or generate your own data that lend themselves to being analysed by a two-way ANOVA. Generate suitable hypotheses about your data, and analyse it. Supplement your analysis by providing a suitable descriptive statistical summary and graph(s) of your data.

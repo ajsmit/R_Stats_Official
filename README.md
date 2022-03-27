@@ -8,7 +8,7 @@
 
 This is a workshop about the practice of the basic statistics used by biologists, and not about the theory and mathematical underpinnings of the methods used. Each of the Chapters will cover a basic kind of statistical approach, and the main classes of data it applies to. Since much insight and understanding can be gained from visualising our data, we will also explore the main types of graphical summaries that best accompany the statistical methodologies. It is our intention to demonstrate how we go about analysing our data.
 
-![Walberg_assumptions](Resources/wahlberg_assumptions.jpeg)
+![Walberg_assumptions](Resources/wahlberg_assumptions.jpeg){width=50%}
 
 # Prerequisites
 
@@ -30,7 +30,7 @@ These links point to online resources such as datasets and R scripts in support 
 
 ## Day 1
 
--   [About](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Introduction.ipynb)
+-   [About](https://github.com/ajsmit/R_Stats_Official/blob/main/doc/01-about.html)
 
 -   [Data](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Data.ipynb)
 
@@ -40,7 +40,7 @@ These links point to online resources such as datasets and R scripts in support 
 
 -   [Descriptive statistics](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Descriptive.ipynb)
 
--   [t-Tests](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/t-Tests.ipynb)
+-   [t-Tests](https://github.com/ajsmit/R_Stats_Official/blob/main/doc/06-t-Tests.html)
 
 -   [ANOVA](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/ANOVA.ipynb)
 

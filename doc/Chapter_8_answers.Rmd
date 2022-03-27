@@ -1,0 +1,156 @@
+---
+title: "Chapter 8"
+subtitle: "Answers"  
+author: 
+  - "AJ Smit"
+date: '2020/07/01 (updated: `r Sys.Date()`)'
+output:
+  xaringan::moon_reader:
+    css:
+      - default
+      - "/Users/ajsmit/Dropbox/R/workshops/Basic_stats/_private/default-fonts.css"
+      - ki
+      - "/Users/ajsmit/Dropbox/R/workshops/Basic_stats/_private/uwc_logo.css"
+    yolo: false
+    self_contained: TRUE  
+    lib_dir: libs
+    nature:
+      highlightStyle: idea
+      highlightLines: true
+      highlightLanguage: r
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE, echo=FALSE} 
+library(tidyverse)
+library(ggpubr)
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "R>",
+                      message = FALSE,
+                      warning = FALSE,
+                      include = TRUE,
+                      fig.retina = 3,
+                      fig.width = 6,
+                      fig.height = 3.6,
+                      fig.align = "center")
+```
+
+## Fit linear model to raw data
+
+```{r, message=FALSE}
+lungs <- read_tsv("../data/LungCapData.csv")
+mod <- lm(LungCap ~ Age, data = lungs) #<<
+summary(mod)
+```
+---
+## Fit linear model to residuals
+
+```{r}
+lungs$resid <- mod$residuals # create variable to contain residuals of of mod
+lungs$fitted <- mod$fitted.values # create variable for fitted.values of mod
+mod_resid <- lm(resid ~ Age, data = lungs) # fit model to residuals #<<
+lungs$resid_resid <- mod_resid$residuals # add residuals of mod_resid
+lungs$resid_fitted <- mod_resid$fitted.values # add fitted.values of mod_resid
+summary(mod_resid)
+```
+
+---
+## Plot the two models
+
+```{r, fig.width=11, fig.height=4}
+mod_plt <- ggplot(data = lungs, aes(x = Age, y = LungCap)) +
+  geom_point(shape = 1, colour = "cyan4") +
+  geom_line(aes(y = fitted), colour = "cyan4", size = 0.6) +
+  labs(x = "Age", y = "Lung capacity")
+mod_resid_plt <- ggplot(data = lungs, aes(x = Age, y = resid_resid)) +
+  geom_point(shape = 1, colour = "indianred3") +
+  geom_line(aes(y = resid_fitted), colour = "indianred3", size = 0.6) +
+  labs(x = "Age", y = "Residuals of lung capacity model, `mod`")
+ggpubr::ggarrange(mod_plt, mod_resid_plt, ncol = 2)
+```
+
+---
+## What is the relationship between the residuals and the raw data?
+
+```{r, results='hide'}
+lungs_sub <- lungs %>%
+  group_by(Age) %>%
+  sample_n(1) %>%
+  ungroup()
+mod_vec <- ggplot(data = lungs, aes(x = Age)) +
+  geom_point(aes(y = LungCap), shape = 1, colour = "grey80") +
+  geom_line(aes(y = fitted), colour = "cyan4", size = 0.6) +
+  geom_point(aes(y = resid_resid), shape = 5, colour = "grey80") +
+  geom_line(aes(y = resid_fitted), colour = "indianred3", size = 0.6) +
+  geom_point(data = lungs_sub, aes(y = LungCap), shape = 1, colour = "cyan4", size = 3) +
+  geom_point(data = lungs_sub, aes(y = resid_resid), shape = 5, colour = "indianred3", size = 3) +
+  geom_segment(data = lungs_sub,
+               aes(x = lungs_sub$Age, xend = lungs_sub$Age,
+                   y = lungs_sub$LungCap, yend = lungs_sub$resid),
+               alpha = 0.4, arrow = arrow(), size = 1.0) +
+  labs(x = "Age", y = "Y")
+```
+
+---
+```{r, fig.width=9, fig.height=5}
+mod_vec
+```
+
+---
+.left-column[
+## Hence, the Answers
+]
+
+.right-column[
+- What is the unit of $\alpha$?
+
+This is the unit of the variable plotted on the $y$-axis, i.e. that of `LungCap`. E.g., if lung capacity was measured in decilitres, then the unit of the $y$-intercept would be decilitres, or $dL$.
+
+- What is the unit of $\beta$?
+
+The slope is $\frac{\Delta y} {\Delta x}$, i.e. $y \cdot x^{-1}$, or in the units of the variables used in the example, $dL \cdot yr^{-1}$. This means that for every year that a person in this population ages, the lung capacity would increase by 0.55 $dL$.
+
+- What would be the slope of a linear model fitted to the residuals?
+
+Zero, 0
+
+- What would be the intercept of a linear model fitted to the residuals?
+
+Zero, 0
+]
+
+---
+.left-column[
+]
+
+.right-column[
+- State the null hypotheses for the intercept and slope for this linear model, and provide statistical support for accepting/not accepting the linear model fitted to the residuals.
+
+**H0 (1):** The $y$-intercept is not significantly different from 0.
+
+We see that the estimate for the $y$-intercept is `r round(mod_resid$coef[1], 2)` and the associated *p*-values is < 0.05 (*t* = 6.249; d.f. = 723). Therefore, the $y$-intercept is significantly different from 0.
+
+**H0 (2):** The slope of the regression line is not significantly different from 0, or, lung capacity does not depend on the age of individuals aged 1 to 19 years of age.
+
+The estimate for the slope is `r round(mod_resid$coef[2], 2)` and the associated *p*-value is < 0.05 (*t* = 38.476; d.f. = 723). Therefore, the slope of the line is significantly different from 0, and we can conclude that lung volume of individuals aged from 1 to 19 years old does change as a function of age.
+]
+
+---
+.left-column[
+]
+
+.right-column[
+- What is the significance of the overall model fit?
+
+`F-statistic:  1480 on 1 and 723 DF,  p-value: < 2.2e-16`, i.e. a linear model describes a significant proportion of the response that lung volume shows as a function of age. Looking at the Adjusted $r^{2}$,the linear model explains 67.14% of this variation. The rest of the variance left unexplained is due to unaccounted for sources of variation, such as intrinsic between human differences.
+
+- Why (to all of the above)?
+
+The residuals show 0 slope and 0 intercept because in effect this is what the linear model does, viz. it 'subtracts' or removes the linear variation that lung capacity shows with age from the raw data, and what is left over are data without slope (a flat line) that intersects with the $y$-axis at 0. What is left over is variation that exists in the data that is not due to age.
+
+- Create a plot of the fitted line added to the scatterplot of residuals.
+
+See above.
+]
+

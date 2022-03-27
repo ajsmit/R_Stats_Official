@@ -1,0 +1,86 @@
+# Linear mixed models
+
+
+```{r prelim-opts, echo=FALSE}
+knitr::opts_chunk$set(
+  comment = "R>", 
+  warning = FALSE, 
+  message = FALSE,
+  out.width = '70%'
+)
+```
+
+In the previous chapter we learned how to test hypotheses based on the comparions of means between sets of data when we were able to meet our two base assumptions. These parametric tests are preferred over non-parametric tests because they are more robust. However, when we simply aren't able to meet these assumptions we must not despair. Non-parametric tests are still useful. In this chapter we will learn how to run non-parametirc tests for two sample and multiple sample datasets. To start, let's load our libraries and `chicks` data if we have not already.
+
+```{r}
+# First activate libraries
+library(tidyverse)
+library(ggpubr)
+
+# Then load data
+chicks <- as_tibble(ChickWeight)
+```
+
+With our libraries and data loaded, let's find a day in which at least one of our assumptions are violated.
+
+```{r}
+# Then check for failing assumptions
+chicks %>% 
+  filter(Time == 0) %>% 
+  group_by(Diet) %>% 
+  summarise(norm_wt = as.numeric(shapiro.test(weight)[2]),
+            var_wt = var(weight))
+```
+
+## Wilcox rank sum test
+
+The non-parametric version of a t-test is a Wilcox rank sum test. To perform this test in R we may again use `compare_means()` and specify the test we want:
+
+```{r}
+compare_means(weight ~ Diet, data = filter(chicks, Time == 0, Diet %in% c(1, 2)), method = "wilcox.test")
+```
+
+What do our results show?
+
+## Kruskall-Wallis rank sum test
+
+### Single factor
+
+The non-parametric version of an ANOVA is a Kruskall-Wallis rank sum test. As you may have by now surmised, this may be done with `compare_means()` as seen below:
+
+```{r}
+compare_means(weight ~ Diet, data = filter(chicks, Time == 0), method = "kruskal.test")
+```
+
+As with the ANOVA, this first step with the Kruskall-Wallis test is not the last. We must again run a post-hoc test on our results. This time we will need to use `pgirmess::kruskalmc()`, which means we will need to load a new library.
+
+```{r}
+library(pgirmess)
+
+kruskalmc(weight ~ Diet, data = filter(chicks, Time == 0))
+```
+
+Let's consult the help file for `kruskalmc()` to understand what this print-out means.
+
+### Multiple factors
+
+The water becomes murky quickly when one wants to perform mutliple factor non-parametric comparison of means tests. TO that end, we will not cover the few existing methods here. Rather, one should avoid the necessity for these types of tests when designing an experiment.
+
+## Generalised linear models
+
+### Sign Test
+
+### Wilcoxon Signed-Rank Test
+
+### Mann-Whitney-Wilcoxon Test
+
+### Kruskal-Wallis Test
+
+### Generalised linear models (GLM)
+
+
+## Exercises
+
+## Exercise 1
+
+Write out the hypotheses that we tested for in this chapter and answer them based on the results we produced in class.

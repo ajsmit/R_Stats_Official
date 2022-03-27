@@ -1,0 +1,21 @@
+# Chi-squared
+
+
+```{r prelim-opts, echo=FALSE}
+knitr::opts_chunk$set(
+  comment = "R>", 
+  warning = FALSE, 
+  message = FALSE,
+  out.width = '70%'
+)
+```
+
+A chi-squared test is used when one wants to see if there is a realtionship between count data of two or more factors.
+
+```{r}
+x <- c(A = 20, B = 15, C = 25)
+chisq.test(x)
+
+
+```
+

@@ -1,0 +1,40 @@
+---
+title: "Output"
+author: "AJ Smit & Robert Schlegel"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+# Output
+
+## Q1
+Run the required test appropriately.
+
+### Dataset
+
+### Visualisation
+
+### Hypothesis
+
+### Assumptions
+
+### Statistical test
+Write out the code required to perform a XXX test. Report the results. Is the null hypothesis accepted or rejected?
+
+## Q2
+Choose the correct test for each dataset. The tests one must use are found (not necessarily in the order given) below.  
+
+* One test must look at the relationship between two variables
+* One test must compare two means
+* One test must compare multiple means
+
+Before a test may be run, the data must be visualised and an appropriate hypothesis must be formed.
+
+### Dataset 1
+
+### Dataset 2
+
+### Dataset 3
+
+## Q3
+Pick a dataset and read the description for it. Visualise the data. Formulate a hypothesis that could be tested with the data. Choose an appropriate test and check the necessary assumptions. Report the results and whether or not the null hypothesis is accepted or rejectd.

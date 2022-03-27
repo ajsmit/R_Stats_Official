@@ -1,0 +1,55 @@
+---
+title: "Chapter 7"
+subtitle: "Analysis of Variance (Part 1)"  
+author: 
+  - "AJ Smit"
+date: '2020/06/28 (updated: `r Sys.Date()`)'
+output:
+  xaringan::moon_reader:
+    css:
+      - default
+      - "/Users/ajsmit/Dropbox/R/workshops/Basic_stats/_private/default-fonts.css"
+      - ki
+      - "/Users/ajsmit/Dropbox/R/workshops/Basic_stats/_private/uwc_logo.css"
+    yolo: false
+    self_contained: TRUE  
+    lib_dir: libs
+    nature:
+      highlightStyle: idea
+      highlightLines: true
+      highlightLanguage: r
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include = FALSE, echo = FALSE} 
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "R>",
+                      message = FALSE,
+                      warning = FALSE,
+                      include = TRUE,
+                      fig.retina = 3,
+                      fig.width = 6,
+                      fig.height = 3.6,
+                      fig.align = "center")
+```
+
+## Analysis of Variance
+
+For more details about a Analysis of Variance, please visit <https://ajsmit.github.io/Basic_stats/anova.html>.
+
+Other takes on linear regressions can be seen at:
+
+- 
+- <https://rpubs.com/aaronsc32/anova-compare-more-than-two-groups>
+
+---
+
+---
+.left-column[## Questions]
+
+.right-column[
+- What is the unit of $\alpha$?
+- What is the unit of $\beta$?
+]

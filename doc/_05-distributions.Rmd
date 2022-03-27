@@ -1,0 +1,968 @@
+# Distributions
+
+
+```{r prelim-opts, echo=FALSE, eval=FALSE}
+knitr::opts_chunk$set(
+  comment = "R>", 
+  warning = FALSE, 
+  message = FALSE,
+  out.width = '70%'
+)
+# install.packages("webshot")
+# webshot::install_phantomjs()
+```
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE, include=FALSE}
+library(tidyverse)
+library(plotly)
+library(Rlab)
+```
+
+Therefore, we must next learn about the different types of data distributions we are likely to encounter in the wild.
+
+## Discrete distributions
+A discrete random variable has a finite or countable number of possible values. As the name suggests, it models integer data. Below we provide options to generate and visualise data belonging to several classes of discrete distributions. Later (Chapter 11) we will learn how to transform these data prior to performing the appropriate statistical analysis.
+
+### Bernoulli distribution
+A Bernoulli random variable, $x$, takes the value 1 with probability $p$ and the value 0 with probability $q=1−p$. It is used to represent data resulting from a *single* experiment with binary (yes or no; black or white; positive or negative; success or failure; dead or alive;) outcomes, such as a coin toss---there are only two options, heads or tails. Nothing else. Here, $p$ represents the probability of the one outcome and $q$ the probability of the other outcome. The distribution of the possible outcomes, $x$, is given by:
+
+$$
+f(x;p)=
+  \begin{cases}
+    p, &\text{if}~x=1\\
+    1-p, &\text{if}~x=0
+  \end{cases}
+$$
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+bern_dat <- data.frame(dist = c(rbern(10, 0.1), rbern(100, 0.1), rbern(1000, 0.1),
+                                rbern(10, 0.5), rbern(100, 0.5), rbern(1000, 0.5),
+                                rbern(10, 0.9), rbern(100, 0.9), rbern(1000, 0.9)),
+                       bern_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 3),
+                                          c(rep("p = 0.1", 1110), rep("p = 0.5", 1110), rep("p = 0.9", 1110)), 
+                                          sep = ", "))
+
+# Create density curves
+bern_dens <- data.frame()
+for(i in 1:length(levels(bern_dat$bern_group))) {
+  x <- density(bern_dat$dist[bern_dat$bern_group == levels(bern_dat$bern_group)[i]])$x
+  y <- density(bern_dat$dist[bern_dat$bern_group == levels(bern_dat$bern_group)[i]])$y
+  df <- data.frame(x = x, y = y, bern_group = levels(bern_dat$bern_group)[i])
+  bern_dens <- rbind(bern_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(bern_dat$bern_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(bern_dat$bern_group)[i]),
+                 label = unique(bern_dat$bern_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = bern_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~bern_group,
+                    operation = '=',
+                    value = unique(bern_dat$bern_group)[5]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = bern_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~bern_group,
+                   operation = '=',
+                   value = unique(bern_dat$bern_group)[5]))) %>%
+  layout(title = "Bernoulli distribution",
+         xaxis = list(title = "success"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 4, buttons = l)))
+p
+```
+
+### Binomial distribution
+A binomial random variable, $x$, is the sum of $n$ independent Bernoulli random variables with parameter $p$. This data distribution results from repeating identical experiments that produce a binary outcome with probability $p$ a specified number of times, and choosing $n$ samples at random. As such, it represents a collection of Bernoulli trials.
+
+$$f(x;n,p)= {n\choose x}p^{x}(1-p)^{n-x}$$
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+binom_dat <- data.frame(dist = c(rbinom(10, 10, 0.1), rbinom(100, 10, 0.1), rbinom(1000, 10, 0.1),
+                                rbinom(10, 20, 0.1), rbinom(100, 20, 0.1), rbinom(1000, 20, 0.1),
+                                rbinom(10, 30, 0.1), rbinom(100, 30, 0.1), rbinom(1000, 30, 0.1),
+                                rbinom(10, 10, 0.5), rbinom(100, 10, 0.5), rbinom(1000, 10, 0.5),
+                                rbinom(10, 20, 0.5), rbinom(100, 20, 0.5), rbinom(1000, 20, 0.5),
+                                rbinom(10, 30, 0.5), rbinom(100, 30, 0.5), rbinom(1000, 30, 0.5),
+                                rbinom(10, 10, 0.9), rbinom(100, 10, 0.9), rbinom(1000, 10, 0.9),
+                                rbinom(10, 20, 0.9), rbinom(100, 20, 0.9), rbinom(1000, 20, 0.9),
+                                rbinom(10, 30, 0.9), rbinom(100, 30, 0.9), rbinom(1000, 30, 0.9)),
+                       binom_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 9),
+                                          rep(c(rep("s = 10", 1110), rep("s = 20", 1110), rep("s = 30", 1110)), 3),
+                                          c(rep("p = 0.1", 3330), rep("p = 0.5", 3330), rep("p = 0.9", 3330)), 
+                                          sep = ", "))
+
+# Create density curves
+binom_dens <- data.frame()
+for(i in 1:length(levels(binom_dat$binom_group))) {
+  x <- density(binom_dat$dist[binom_dat$binom_group == levels(binom_dat$binom_group)[i]])$x
+  y <- density(binom_dat$dist[binom_dat$binom_group == levels(binom_dat$binom_group)[i]])$y
+  df <- data.frame(x = x, y = y, binom_group = levels(binom_dat$binom_group)[i])
+  binom_dens <- rbind(binom_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(binom_dat$binom_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(binom_dat$binom_group)[i]),
+                 label = unique(binom_dat$binom_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = binom_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~binom_group,
+                    operation = '=',
+                    value = unique(binom_dat$binom_group)[13]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = binom_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~binom_group,
+                   operation = '=',
+                   value = unique(binom_dat$binom_group)[13]))) %>%
+  layout(title = "Binomial distribution",
+         xaxis = list(title = "success"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 12, buttons = l)))
+p
+```
+
+### Negative binomial distribution
+A negative binomial random variable, $x$, counts the number of successes in a sequence of independent Bernoulli trials with probability $p$ before $r$ failures occur. This distribution could for example be used to predict the number of heads that result from a series of coin tosses before three tails are observed:
+
+$$f(x;n,r,p)= {x+r-1\choose x}p^{x}(1-p)^{r}$$
+
+where $x$ is the number of successes, $r$ is the number of failures, and $p$ is the probability of success
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+nbinom_dat <- data.frame(dist = c(rnbinom(10, 10, 0.1), rnbinom(100, 10, 0.1), rnbinom(1000, 10, 0.1),
+                                 rnbinom(10, 20, 0.1), rnbinom(100, 20, 0.1), rnbinom(1000, 20, 0.1),
+                                 rnbinom(10, 30, 0.1), rnbinom(100, 30, 0.1), rnbinom(1000, 30, 0.1),
+                                 rnbinom(10, 10, 0.5), rnbinom(100, 10, 0.5), rnbinom(1000, 10, 0.5),
+                                 rnbinom(10, 20, 0.5), rnbinom(100, 20, 0.5), rnbinom(1000, 20, 0.5),
+                                 rnbinom(10, 30, 0.5), rnbinom(100, 30, 0.5), rnbinom(1000, 30, 0.5),
+                                 rnbinom(10, 10, 0.9), rnbinom(100, 10, 0.9), rnbinom(1000, 10, 0.9),
+                                 rnbinom(10, 20, 0.9), rnbinom(100, 20, 0.9), rnbinom(1000, 20, 0.9),
+                                 rnbinom(10, 30, 0.9), rnbinom(100, 30, 0.9), rnbinom(1000, 30, 0.9)),
+                        nbinom_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 9),
+                                            rep(c(rep("s = 10", 1110), rep("s = 20", 1110), rep("s = 30", 1110)), 3),
+                                            c(rep("p = 0.1", 3330), rep("p = 0.5", 3330), rep("p = 0.9", 3330)), 
+                                          sep = ", "))
+
+# Create density curves
+nbinom_dens <- data.frame()
+for(i in 1:length(levels(nbinom_dat$nbinom_group))) {
+  x <- density(nbinom_dat$dist[nbinom_dat$nbinom_group == levels(nbinom_dat$nbinom_group)[i]])$x
+  y <- density(nbinom_dat$dist[nbinom_dat$nbinom_group == levels(nbinom_dat$nbinom_group)[i]])$y
+  df <- data.frame(x = x, y = y, nbinom_group = levels(nbinom_dat$nbinom_group)[i])
+  nbinom_dens <- rbind(nbinom_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(nbinom_dat$nbinom_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(nbinom_dat$nbinom_group)[i]),
+                 label = unique(nbinom_dat$nbinom_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = nbinom_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~nbinom_group,
+                    operation = '=',
+                    value = unique(nbinom_dat$nbinom_group)[13]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = nbinom_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~nbinom_group,
+                   operation = '=',
+                   value = unique(nbinom_dat$nbinom_group)[13]))) %>%
+  layout(title = "Negative binomial distribution",
+         xaxis = list(title = "success"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 12, buttons = l)))
+p
+```
+
+### Geometric distribution
+A geometric random variable, $x$, represents the number of trials that are required to observe a single success. Each trial is independent and has success probability $p$. As an example, the geometric distribution is useful to model the number of times a die must be tossed in order for a six to be observed. It is given by:
+
+$$f(x;p)=(1-p)^{x}p$$
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+geom_dat <- data.frame(dist = c(rgeom(10, 0.1), rgeom(100, 0.1), rgeom(1000, 0.1),
+                                 rgeom(10, 0.5), rgeom(100, 0.5), rgeom(1000, 0.5),
+                                 rgeom(10, 0.9), rgeom(100, 0.9), rgeom(1000, 0.9)),
+                        geom_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 3),
+                                            c(rep("p = 0.1", 1110), rep("p = 0.5", 1110), rep("p = 0.9", 1110)), 
+                                          sep = ", "))
+
+# Create density curves
+geom_dens <- data.frame()
+for(i in 1:length(levels(geom_dat$geom_group))) {
+  x <- density(geom_dat$dist[geom_dat$geom_group == levels(geom_dat$geom_group)[i]])$x
+  y <- density(geom_dat$dist[geom_dat$geom_group == levels(geom_dat$geom_group)[i]])$y
+  df <- data.frame(x = x, y = y, geom_group = levels(geom_dat$geom_group)[i])
+  geom_dens <- rbind(geom_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(geom_dat$geom_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(geom_dat$geom_group)[i]),
+                 label = unique(geom_dat$geom_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = geom_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~geom_group,
+                    operation = '=',
+                    value = unique(geom_dat$geom_group)[5]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = geom_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~geom_group,
+                   operation = '=',
+                   value = unique(geom_dat$geom_group)[5]))) %>%
+  layout(title = "Geometric distribution",
+         xaxis = list(title = "success"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 4, buttons = l)))
+p
+```
+
+
+### Poisson distribution
+A Poisson random variable, $x$, tallies the number of events occurring in a fixed interval of time or space, given that these events occur with an average rate $\lambda$. Poisson distributions can be used to model events such as meteor showers and or number of people entering a shopping mall. This equation describes the Poison distribution:
+
+$$f(x;\lambda)=\frac{\lambda^{x}e^{-\lambda}}{x!}$$
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+pois_dat <- data.frame(dist = c(rpois(10, 10), rpois(100, 10), rpois(1000, 10),
+                                rpois(10, 20), rpois(100, 20), rpois(1000, 20),
+                                rpois(10, 30), rpois(100, 30), rpois(1000, 30)),
+                       pois_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 3),
+                                          c(rep("l = 10", 1110), rep("l = 20", 1110), rep("l = 30", 1110)), 
+                                          sep = ", "))
+
+# Create density curves
+pois_dens <- data.frame()
+for(i in 1:length(levels(pois_dat$pois_group))) {
+  x <- density(pois_dat$dist[pois_dat$pois_group == levels(pois_dat$pois_group)[i]])$x
+  y <- density(pois_dat$dist[pois_dat$pois_group == levels(pois_dat$pois_group)[i]])$y
+  df <- data.frame(x = x, y = y, pois_group = levels(pois_dat$pois_group)[i])
+  pois_dens <- rbind(pois_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(pois_dat$pois_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(pois_dat$pois_group)[i]),
+                 label = unique(pois_dat$pois_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = pois_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~pois_group,
+                    operation = '=',
+                    value = unique(pois_dat$pois_group)[5]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = pois_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~pois_group,
+                   operation = '=',
+                   value = unique(pois_dat$pois_group)[5]))) %>%
+  layout(title = "Poisson distribution",
+         xaxis = list(title = "observed occurrences"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 4, buttons = l)))
+p
+```
+
+## Continuous distributions
+
+### Normal distribution
+
+Another name for this kind of distribution is a Gaussian distribution. A random sample with a Gaussian distribution is normally distributed. These values are identically distributed and independent---we say they are independent and identically distributed random variables (i.i.d.), and they have an expected mean given by $\mu$ (or $\hat{x}$ in Chapter 3.2.1) and a finite variance given by $\sigma^{2}$ (or $S^{2}$ in Chapter 3.3.1); if the number of samples drawn from a population is sufficiently large, the estimated mean and SD will be indistinguishable from the population (as per the central limit theorem).
+
+```{r, echo=FALSE, eval=TRUE}
+# library(animation)
+# library(e1071)
+
+## The function to animate a histogram
+# hist_fig <- function(i){
+#   set.seed(666)
+#   norm_dat <- data.frame(dat = rnorm(n = i, mean = 10, sd = 1),
+#                          sample = "A")
+#   hist <- ggplot(data = norm_dat, aes(x = dat)) + 
+#     geom_histogram(aes(y = ..density..),
+#                  position = 'identity',
+#                  colour = "black", fill = "turquoise", alpha = 0.6) +
+#     geom_density(colour = "black", fill = "salmon", alpha = 0.6) +
+#     annotate("text", x = 6.5, y = 0.35, size = 5, 
+#              label = paste0("N = ", i, 
+#                             "\nmean = 10", 
+#                             "\nSD = 1",
+#                             "\nskew = ", round(skewness(norm_dat$dat), 2),
+#                             "\nkurt = ", round(kurtosis(norm_dat$dat), 2))) +
+#     scale_x_continuous(limits = c(6, 14)) +
+#     scale_y_continuous(limits = c(0, 0.4)) +
+#     ggtitle("Normal distribution") +
+#     labs(x = "value")
+#     print(hist)
+# }
+
+## Create animation of the histogram
+# animate_hist <- function() {
+#   lapply(c(rep(10, 5), seq(20, 90, 10), seq(100, 900, 100), seq(900, 1000, 10), rep(1000, 5)), function(i) {
+#     hist_fig(i)
+#   })
+# }
+
+# Note that this spits out in the main directory and is manually moved to the figures folder
+
+# saveGIF(animate_hist())
+# system.time(saveGIF(animate_hist(), interval = 0.5, ani.width = 600, movie.name = "hist_norm_n.gif")) ## ~12 seconds
+knitr::include_graphics("figures/hist_norm_n.gif")
+```
+
+```{r rmarkdown, echo = FALSE}
+knitr::include_graphics("figures/Standard_deviation_diagram.png")
+```
+
+```{r, echo=FALSE, eval=FALSE}
+# Create base distributions
+set.seed(666)
+norm_dat <- data.frame(dist = c(rnorm(10, 10, 1), rnorm(100, 10, 1), rnorm(1000, 10, 1),
+                                rnorm(10, 20, 1), rnorm(100, 20, 1), rnorm(1000, 20, 1),
+                                rnorm(10, 30, 1), rnorm(100, 30, 1), rnorm(1000, 30, 1),
+                                rnorm(10, 10, 2), rnorm(100, 10, 2), rnorm(1000, 10, 2),
+                                rnorm(10, 20, 2), rnorm(100, 20, 2), rnorm(1000, 20, 2),
+                                rnorm(10, 30, 2), rnorm(100, 30, 2), rnorm(1000, 30, 2),
+                                rnorm(10, 10, 3), rnorm(100, 10, 3), rnorm(1000, 10, 3),
+                                rnorm(10, 20, 3), rnorm(100, 20, 3), rnorm(1000, 20, 3),
+                                rnorm(10, 30, 3), rnorm(100, 30, 3), rnorm(1000, 30, 3)),
+                       norm_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 9),
+                                      rep(c(rep("m = 10", 1110), rep("m = 20", 1110), rep("m = 30", 1110)), 3),
+                                      c(rep("sd = 1", 3330), rep("sd = 2", 3330), rep("sd = 3", 3330)), 
+                                          sep = ", "))
+
+# Create density curves
+norm_dens <- data.frame()
+for(i in 1:length(levels(norm_dat$norm_group))) {
+  x <- density(norm_dat$dist[norm_dat$norm_group == levels(norm_dat$norm_group)[i]])$x
+  y <- density(norm_dat$dist[norm_dat$norm_group == levels(norm_dat$norm_group)[i]])$y
+  df <- data.frame(x = x, y = y, norm_group = levels(norm_dat$norm_group)[i])
+  norm_dens <- rbind(norm_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(norm_dat$norm_group))) {
+  l[[i]] <- list(method = "restyle",
+            args = list("transforms[0].value", unique(norm_dat$norm_group)[i]),
+            label = unique(norm_dat$norm_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = norm_dat, 
+          transforms = list(
+            list(type = 'filter',
+                 target = ~norm_group,
+                 operation = '=',
+                 value = unique(norm_dat$norm_group)[13]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = norm_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~norm_group,
+                   operation = '=',
+                   value = unique(norm_dat$norm_group)[13]))) %>%
+  layout(title = "Normal distribution",
+         xaxis = list(title = "value"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+              showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+    updatemenus = list(list(y = 1.05, x = 0.2, active = 12, buttons = l)))
+p
+```
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=0.7\linewidth]{figures/Boxplot_vs_PDF.png}
+\end{center}
+\caption{Boxplot and probability density function of a normal distribution. Credit: Wikipedia.}
+\end{figure}
+
+### Uniform distribution
+
+The continuous uniform distribution is sometime called a rectangular distribution. Simply, it states that all measurements of the same magnitude included with this distribution are equally probable. This is basically random numbers.
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+unif_dat <- data.frame(dist = c(runif(10, 0, 10), runif(100, 0, 10), runif(1000, 0, 10),
+                                runif(10, 0, 50), runif(100, 0, 50), runif(1000, 0, 50),
+                                runif(10, 0, 100), runif(100, 0, 100), runif(1000, 0, 100)),
+                       unif_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 3),
+                                          rep("min = 0", 3330),
+                                          c(rep("max = 10", 1110), rep("max = 50", 1110), rep("max = 100", 1110)), 
+                                          sep = ", "))
+
+# Create density curves
+unif_dens <- data.frame()
+for(i in 1:length(levels(unif_dat$unif_group))) {
+  x <- density(unif_dat$dist[unif_dat$unif_group == levels(unif_dat$unif_group)[i]])$x
+  y <- density(unif_dat$dist[unif_dat$unif_group == levels(unif_dat$unif_group)[i]])$y
+  df <- data.frame(x = x, y = y, unif_group = levels(unif_dat$unif_group)[i])
+  unif_dens <- rbind(unif_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(unif_dat$unif_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(unif_dat$unif_group)[i]),
+                 label = unique(unif_dat$unif_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = unif_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~unif_group,
+                    operation = '=',
+                    value = unique(unif_dat$unif_group)[5]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = unif_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~unif_group,
+                   operation = '=',
+                   value = unique(unif_dat$unif_group)[5]))) %>%
+  layout(title = "Uniform distribution",
+         xaxis = list(title = "value"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 4, buttons = l)))
+p
+```
+
+### Student T distribution
+
+This is a continuous probability distribution that arises when estimating the mean of a normally distributed population in situations where the sample size is small and population standard deviation is unknown. It is used in the statistical significance testing between the means of different sets of samples, and not much so in the modelling of natural phenomena.
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+t_dat <- data.frame(dist =    c(rt(10, 5, 0), rt(100, 5, 0), rt(1000, 5, 0),
+                                rt(10, 20, 0), rt(100, 20, 0), rt(1000, 20, 0),
+                                rt(10, 100, 0), rt(100, 100, 0), rt(1000, 100, 0),
+                                rt(10, 5, 3), rt(100, 5, 3), rt(1000, 5, 3),
+                                rt(10, 20, 3), rt(100, 20, 3), rt(1000, 20, 3),
+                                rt(10, 100, 3), rt(100, 100, 3), rt(1000, 100, 3),
+                                rt(10, 5, 6), rt(100, 5, 6), rt(1000, 5, 6),
+                                rt(10, 20, 6), rt(100, 20, 6), rt(1000, 20, 6),
+                                rt(10, 100, 6), rt(100, 100, 6), rt(1000, 100, 6)),
+                       t_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 9),
+                                          rep(c(rep("df = 5", 1110), rep("df = 20", 1110), rep("df = 100", 1110)), 3),
+                                          c(rep("ncp = 0", 3330), rep("ncp = 3", 3330), rep("ncp = 6", 3330)), 
+                                          sep = ", "))
+
+# Create density curves
+t_dens <- data.frame()
+for(i in 1:length(levels(t_dat$t_group))) {
+  x <- density(t_dat$dist[t_dat$t_group == levels(t_dat$t_group)[i]])$x
+  y <- density(t_dat$dist[t_dat$t_group == levels(t_dat$t_group)[i]])$y
+  df <- data.frame(x = x, y = y, t_group = levels(t_dat$t_group)[i])
+  t_dens <- rbind(t_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(t_dat$t_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(t_dat$t_group)[i]),
+                 label = unique(t_dat$t_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = t_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~t_group,
+                    operation = '=',
+                    value = unique(t_dat$t_group)[14]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = t_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~t_group,
+                   operation = '=',
+                   value = unique(t_dat$t_group)[14]))) %>%
+  layout(title = "Student T distribution",
+         xaxis = list(title = "value"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 13, buttons = l)))
+p
+```
+
+### Chi-squared distribution
+
+Mostly used in hypothesis testing, but not to encapsulate the distribution of data drawn to represent natural phenomena.
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+chisq_dat <- data.frame(dist = c(rchisq(10, 5, 0), rchisq(100, 5, 0), rchisq(1000, 5, 0),
+                                rchisq(10, 20, 0), rchisq(100, 20, 0), rchisq(1000, 20, 0),
+                                rchisq(10, 100, 0), rchisq(100, 100, 0), rchisq(1000, 100, 0),
+                                rchisq(10, 5, 2), rchisq(100, 5, 2), rchisq(1000, 5, 2),
+                                rchisq(10, 20, 2), rchisq(100, 20, 2), rchisq(1000, 20, 2),
+                                rchisq(10, 100, 2), rchisq(100, 100, 2), rchisq(1000, 100, 2),
+                                rchisq(10, 5, 4), rchisq(100, 5, 4), rchisq(1000, 5, 4),
+                                rchisq(10, 20, 4), rchisq(100, 20, 4), rchisq(1000, 20, 4),
+                                rchisq(10, 100, 4), rchisq(100, 100, 4), rchisq(1000, 100, 4)),
+                    chisq_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 9),
+                                    rep(c(rep("df = 5", 1110), rep("df = 20", 1110), rep("df = 100", 1110)), 3),
+                                    c(rep("ncp = 0", 3330), rep("ncp = 2", 3330), rep("ncp = 4", 3330)), 
+                                          sep = ", "))
+
+# Create density curves
+chisq_dens <- data.frame()
+for(i in 1:length(levels(chisq_dat$chisq_group))) {
+  x <- density(chisq_dat$dist[chisq_dat$chisq_group == levels(chisq_dat$chisq_group)[i]])$x
+  y <- density(chisq_dat$dist[chisq_dat$chisq_group == levels(chisq_dat$chisq_group)[i]])$y
+  df <- data.frame(x = x, y = y, chisq_group = levels(chisq_dat$chisq_group)[i])
+  chisq_dens <- rbind(chisq_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(chisq_dat$chisq_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(chisq_dat$chisq_group)[i]),
+                 label = unique(chisq_dat$chisq_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = chisq_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~chisq_group,
+                    operation = '=',
+                    value = unique(chisq_dat$chisq_group)[14]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = chisq_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~chisq_group,
+                   operation = '=',
+                   value = unique(chisq_dat$chisq_group)[14]))) %>%
+  layout(title = "Chi-squared distribution",
+         xaxis = list(title = "value"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 13, buttons = l)))
+p
+```
+
+### Exponential distribution
+
+This is a probability distribution that describes the time between events in a Poisson point process, i.e., a process in which events occur continuously and independently at a constant average rate.
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+exp_dat <- data.frame(dist = c(rexp(10, 1), rexp(100, 1), rexp(1000, 1),
+                                rexp(10, 2), rexp(100, 2), rexp(1000, 2),
+                                rexp(10, 3), rexp(100, 3), rexp(1000, 3)),
+                       exp_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 3),
+                                          c(rep("rate = 1", 1110), rep("rate = 2", 1110), rep("rate = 3", 1110)), 
+                                          sep = ", "))
+
+# Create density curves
+exp_dens <- data.frame()
+for(i in 1:length(levels(exp_dat$exp_group))) {
+  x <- density(exp_dat$dist[exp_dat$exp_group == levels(exp_dat$exp_group)[i]])$x
+  y <- density(exp_dat$dist[exp_dat$exp_group == levels(exp_dat$exp_group)[i]])$y
+  df <- data.frame(x = x, y = y, exp_group = levels(exp_dat$exp_group)[i])
+  exp_dens <- rbind(exp_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(exp_dat$exp_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(exp_dat$exp_group)[i]),
+                 label = unique(exp_dat$exp_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = exp_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~exp_group,
+                    operation = '=',
+                    value = unique(exp_dat$exp_group)[5]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = exp_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~exp_group,
+                   operation = '=',
+                   value = unique(exp_dat$exp_group)[5]))) %>%
+  layout(title = "Exponential distribution",
+         xaxis = list(title = "observed occurrences"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 4, buttons = l)))
+p
+```
+
+### F distribution
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+f_dat <- data.frame(dist =     c(rf(10, 5, 5), rf(100, 5, 5), rf(1000, 5, 5),
+                                 rf(10, 20, 5), rf(100, 20, 5), rf(1000, 20, 5),
+                                 rf(10, 100, 5), rf(100, 100, 5), rf(1000, 100, 5),
+                                 rf(10, 5, 20), rf(100, 5, 20), rf(1000, 5, 20),
+                                 rf(10, 20, 20), rf(100, 20, 20), rf(1000, 20, 20),
+                                 rf(10, 100, 20), rf(100, 100, 20), rf(1000, 100, 20),
+                                 rf(10, 5, 100), rf(100, 5, 100), rf(1000, 5, 100),
+                                 rf(10, 20, 100), rf(100, 20, 100), rf(1000, 20, 100),
+                                 rf(10, 100, 100), rf(100, 100, 100), rf(1000, 100, 100)),
+                        f_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 9),
+                                            rep(c(rep("df1 = 5", 1110), rep("df1 = 20", 1110), rep("df1 = 100", 1110)), 3),
+                                            c(rep("df2 = 5", 3330), rep("df2 = 20", 3330), rep("df2 = 100", 3330)), 
+                                          sep = ", "))
+
+# Create density curves
+f_dens <- data.frame()
+for(i in 1:length(levels(f_dat$f_group))) {
+  x <- density(f_dat$dist[f_dat$f_group == levels(f_dat$f_group)[i]])$x
+  y <- density(f_dat$dist[f_dat$f_group == levels(f_dat$f_group)[i]])$y
+  df <- data.frame(x = x, y = y, f_group = levels(f_dat$f_group)[i])
+  f_dens <- rbind(f_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(f_dat$f_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(f_dat$f_group)[i]),
+                 label = unique(f_dat$f_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = f_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~f_group,
+                    operation = '=',
+                    value = unique(f_dat$f_group)[14]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = f_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~f_group,
+                   operation = '=',
+                   value = unique(f_dat$f_group)[14]))) %>%
+  layout(title = "F distribution",
+         xaxis = list(title = "value"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 13, buttons = l)))
+p
+```
+
+### Gamma distribution
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+gamma_dat <- data.frame(dist = c(rgamma(10, 1), rgamma(100, 1), rgamma(1000, 1),
+                               rgamma(10, 2), rgamma(100, 2), rgamma(1000, 2),
+                               rgamma(10, 3), rgamma(100, 3), rgamma(1000, 3)),
+                      gamma_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 3),
+                                        c(rep("shape = 1", 1110), rep("shape = 2", 1110), rep("shape = 3", 1110)), 
+                                          sep = ", "))
+
+# Create density curves
+gamma_dens <- data.frame()
+for(i in 1:length(levels(gamma_dat$gamma_group))) {
+  x <- density(gamma_dat$dist[gamma_dat$gamma_group == levels(gamma_dat$gamma_group)[i]])$x
+  y <- density(gamma_dat$dist[gamma_dat$gamma_group == levels(gamma_dat$gamma_group)[i]])$y
+  df <- data.frame(x = x, y = y, gamma_group = levels(gamma_dat$gamma_group)[i])
+  gamma_dens <- rbind(gamma_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(gamma_dat$gamma_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(gamma_dat$gamma_group)[i]),
+                 label = unique(gamma_dat$gamma_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = gamma_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~gamma_group,
+                    operation = '=',
+                    value = unique(gamma_dat$gamma_group)[5]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = gamma_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~gamma_group,
+                   operation = '=',
+                   value = unique(gamma_dat$gamma_group)[5]))) %>%
+  layout(title = "Gamma distribution",
+         xaxis = list(title = "value"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 4, buttons = l)))
+p
+```
+
+### Beta distribution
+
+```{r, echo=FALSE, eval=TRUE}
+# Create base distributions
+set.seed(666)
+beta_dat <- data.frame(dist = c(rbeta(10, 1, 1), rbeta(100, 1, 1), rbeta(1000, 1, 1),
+                                rbeta(10, 2, 1), rbeta(100, 2, 1), rbeta(1000, 2, 1),
+                                rbeta(10, 3, 1), rbeta(100, 3, 1), rbeta(1000, 3, 1),
+                                rbeta(10, 1, 2), rbeta(100, 1, 2), rbeta(1000, 1, 2),
+                                rbeta(10, 2, 2), rbeta(100, 2, 2), rbeta(1000, 2, 2),
+                                rbeta(10, 3, 2), rbeta(100, 3, 2), rbeta(1000, 3, 2),
+                                rbeta(10, 1, 3), rbeta(100, 1, 3), rbeta(1000, 1, 3),
+                                rbeta(10, 2, 3), rbeta(100, 2, 3), rbeta(1000, 2, 3),
+                                rbeta(10, 3, 3), rbeta(100, 3, 3), rbeta(1000, 3, 3)),
+                       beta_group = paste(rep(c(rep("n = 10", 10), rep("n = 100", 100), rep("n = 1000", 1000)), 9),
+                                          rep(c(rep("shape1 = 1", 1110), rep("shape1 = 2", 1110), rep("shape3 = 3", 1110)), 3),
+                                          c(rep("shape2 = 1", 3330), rep("shape2 = 2", 3330), rep("shape3 = 3", 3330)), 
+                                          sep = ", "))
+# Create density curves
+beta_dens <- data.frame()
+for(i in 1:length(levels(beta_dat$beta_group))) {
+  x <- density(beta_dat$dist[beta_dat$beta_group == levels(beta_dat$beta_group)[i]])$x
+  y <- density(beta_dat$dist[beta_dat$beta_group == levels(beta_dat$beta_group)[i]])$y
+  df <- data.frame(x = x, y = y, beta_group = levels(beta_dat$beta_group)[i])
+  beta_dens <- rbind(beta_dens, df)
+}
+
+# Create all of the buttons
+l <- list()
+for(i in 1:length(levels(beta_dat$beta_group))) {
+  l[[i]] <- list(method = "restyle",
+                 args = list("transforms[0].value", unique(beta_dat$beta_group)[i]),
+                 label = unique(beta_dat$beta_group)[i])
+}
+
+# Run the figure
+p <- plot_ly(data = beta_dat, 
+             transforms = list(
+               list(type = 'filter',
+                    target = ~beta_group,
+                    operation = '=',
+                    value = unique(beta_dat$beta_group)[8]))) %>%
+  add_histogram(x = ~dist, name = "Histogram") %>%
+  add_boxplot(x = ~dist, yaxis = "y3", name = "Boxplot") %>% 
+  add_trace(data = beta_dens, x = ~x, y = ~y, mode = "lines", fill = "tozeroy", 
+            yaxis = "y2", name = "Density",
+            transforms = list(
+              list(type = 'filter',
+                   target = ~beta_group,
+                   operation = '=',
+                   value = unique(beta_dat$beta_group)[8]))) %>%
+  layout(title = "Beta distribution",
+         xaxis = list(title = "value"), 
+         yaxis = list(title = "count"),
+         yaxis2 = list(overlaying = "y", zeroline = FALSE,
+                       showline = FALSE, showticklabels = FALSE, showgrid = FALSE),
+         yaxis3 = list(overlaying = "y"),
+         updatemenus = list(list(y = 1.05, x = 0.2, active = 7, buttons = l)))
+p
+```
+
+### Paranormal distributions
+
+```{r paranormal, echo = FALSE}
+knitr::include_graphics("figures/paranormal-distribution.jpg")
+```
+
+## Finding one's data distribution
+Data belonging to a sample will never exactly follow a specific distribution, even when the test for normality says it does---there will always be a small probability that they are non-normal and is in fact better described by some other distribution. In other words, data are only *compatible* with a certain distribution, and one can never answer the question "Does my data follow the distribution xy exactly?" as simply as providing a yes/no answer. So what now? How does one find one's data distribution? We can use the *Cullen and Frey graph* function that lives in the **fitdistrplus** package. This graph tells us whether the skewness and kurtosis of our data are consistent with that of a particular distribution. We will demonstrate by generating various data distributions and testing them using the Cullen and Frey graph.
+
+
+```{r dist-plot1, message=FALSE}
+library(fitdistrplus)
+library(logspline)
+# Generate log-normal data
+y <- c(37.50,46.79,48.30,46.04,43.40,39.25,38.49,49.51,40.38,36.98,40.00,
+38.49,37.74,47.92,44.53,44.91,44.91,40.00,41.51,47.92,36.98,43.40,
+42.26,41.89,38.87,43.02,39.25,40.38,42.64,36.98,44.15,44.91,43.40,
+49.81,38.87,40.00,52.45,53.13,47.92,52.45,44.91,29.54,27.13,35.60,
+45.34,43.37,54.15,42.77,42.88,44.26,27.14,39.31,24.80,16.62,30.30,
+36.39,28.60,28.53,35.84,31.10,34.55,52.65,48.81,43.42,52.49,38.00,
+38.65,34.54,37.70,38.11,43.05,29.95,32.48,24.63,35.33,41.34)
+
+par(mfrow = c(2, 2))
+plot(x = c(1:length(y)), y = y)
+hist(y)
+descdist(y, discrete = FALSE, boot = 100)
+```
+
+```{r dist-plot2}
+# normally distributed data
+y <- rnorm(100, 13, 2)
+par(mfrow = c(2, 2))
+plot(x = c(1:100), y = y)
+hist(y)
+descdist(y, discrete = FALSE)
+```
+
+```{r dist-plot3}
+# uniformly distributed data
+y <- runif(100)
+par(mfrow = c(2, 2))
+plot(x = c(1:100), y = y)
+hist(y)
+descdist(y, discrete = FALSE)
+```
+
+```{r dist-plot4, width = 6, height = 10}
+# uniformly distributed data
+y <- rexp(100, 0.7)
+par(mfrow = c(2, 2))
+plot(x = c(1:100), y = y)
+hist(y)
+descdist(y, discrete = FALSE)
+```
+
+There is also a whole bunch of other approaches to use to try and identify the data distribution. Let us start with the gold standard first: normal data. We will demonstrate some visualisation approaches. The one that you already know is a basic histogram; it tells us something about the distribution's skewness, the tails, the mode(s) of the data, outliers, etc. Histograms can be compared to shapes associated with idealistic (simulated) distributions, as we will do here.
+
+```{r dist-plot5}
+y <-rnorm(n = 200, m = 13, sd = 2)
+par(mfrow = c(2, 2))
+# using some basic base graphics as ggplot2 is overkill;
+# we can get a histogram using hist() statement
+hist(y, main = "Histogram of observed data")
+plot(density(y), main = "Density estimate of data")
+plot(ecdf(y), main = "Empirical cumulative distribution function")
+# standardise the data
+z.norm <- (y - mean(y)) / sd(y) 
+# make a qqplot
+qqnorm(z.norm)
+# add a 45-degree reference line
+abline(0, 1)
+
+```
+
+Above we have also added a diagonal line to the qqplot. If the sampled data come from the population with the chosen distribution, the points should fall approximately along this reference line. The greater the departure from this reference line, the greater the evidence for the conclusion that the data set have come from a population with a different distribution.
+
+```{r}
+# curve(dnorm(100, m = 10, sd = 2), from = 0, to = 20, main = "Normal distribution")
+# curve(dgamma(100, scale = 1.5, shape = 2), from = 0, to = 15, main = "Gamma distribution")
+# curve(dweibull(100, scale = 2.5, shape = 1.5), from = 0, to = 15, main = "Weibull distribution")
+```
+
+
+
+
+
+## Exercises
+
+### Exercise 1
+
+Choose two different datasets and plot them as histograms with density curves overlayed. Label them with the distribution they appear to be and stitch them together with `ggarrange()`.
