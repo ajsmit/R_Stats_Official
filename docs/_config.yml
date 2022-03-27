@@ -1,3 +1,6 @@
-theme: jekyll-theme-minimal
+theme: jekyll-theme-console
 title: Basic Statistics with R
 description: By Prof. AJ Smit, BCB, UWC
+date: 2022-03-27
+header_pages:
+  - 01-about.html
