@@ -8,7 +8,7 @@ This is a workshop about the practice of the basic statistics used by biologists
 
 <!--- ![Wahlberg_assumptions](Resources/wahlberg_assumptions.jpeg){width="50%"} --->
 
-<img src="Resources/wahlberg_assumptions.jpeg" alt="Wahlberg" width="50%"/>
+<img src="Resources/wahlberg_assumptions.jpeg" alt="Wahlberg" class="center" width="50%"/>
 
 # Prerequisites
 
