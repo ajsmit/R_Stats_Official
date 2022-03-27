@@ -32,24 +32,24 @@ These links point to online resources such as datasets and R scripts in support 
 
 -   [About](https://ajsmit.github.io/R_Stats_Official/01-about.html)
 
--   [Data](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Data.ipynb)
+-   [Data](https://ajsmit.github.io/R_Stats_Official/02-data.html)
 
--   [Graphics](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Graphics.ipynb)
+-   [Graphics](https://ajsmit.github.io/R_Stats_Official/04-graphics.html)
 
 ## Day 2
 
--   [Descriptive statistics](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Descriptive.ipynb)
+-   [Descriptive statistics](https://ajsmit.github.io/R_Stats_Official/03-descriptive.html)
 
 -   [t-Tests](https://ajsmit.github.io/R_Stats_Official/06-t-Tests.html)
 
--   [ANOVA](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/ANOVA.ipynb)
+-   [ANOVA](https://ajsmit.github.io/R_Stats_Official/07-anova.html)
 
 ## Day 3
 
--   [Regression](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Regression.ipynb)
+-   [Regression](https://ajsmit.github.io/R_Stats_Official/08-regression.html)
 
--   [Correlation](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Correlation.ipynb)
+-   [Correlation](https://ajsmit.github.io/R_Stats_Official/09-rorrelation.html)
 
--   [Confidence intervals](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Confidence.ipynb)
+-   [Confidence intervals](https://ajsmit.github.io/R_Stats_Official/10-confidence.html)
 
--   [Assumptions](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Assumptions.ipynb)
+-   [Assumptions](https://ajsmit.github.io/R_Stats_Official/11-transformations.html)
