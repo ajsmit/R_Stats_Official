@@ -1,0 +1,62 @@
+---
+title: "R Final Exam"
+subtitle: "For Real"
+author: 
+  - "AJ Smit"
+date: '2020/07/23 (updated: `r Sys.Date()`)'
+output:
+  xaringan::moon_reader:
+    css:
+      - default
+      - "/Users/ajsmit/Dropbox/R/workshops/Basic_stats/_private/default-fonts.css"
+      - ki
+      - "/Users/ajsmit/Dropbox/R/workshops/Basic_stats/_private/uwc_logo.css"
+    yolo: false
+    self_contained: TRUE  
+    lib_dir: libs
+    nature:
+      highlightStyle: idea
+      highlightLines: true
+      highlightLanguage: r
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE, echo=FALSE} 
+library(tidyverse)
+library(ggpubr)
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "R>",
+                      message = FALSE,
+                      warning = FALSE,
+                      include = TRUE,
+                      fig.retina = 3,
+                      fig.width = 6,
+                      fig.height = 3.6,
+                      fig.align = "center")
+```
+
+# Instructions for all questions
+A. Produce full R scripts, including the meta-information at the top (name, date, purpose, etc.). Include comments explaining the purpose of the various tests/sections as necessary.
+
+B. At the onset, *assume* that all assumptions are met (they might not be!). For each question, i) state the name of the parametric statistical test selected and write a sentence or two to justify your choice, and ii) write down the appropriate H0.
+
+C. Test the assumptions. For each statistical test (as per A), state the appropriate assumptions to be tested, mention how you will test the assumptions (incl. writing out the H0 if necessary, or explaining the principle behind a graphical method), and explain the findings. Given the outcome of the test of assumptions, is your choice of test selected in A) still correct? If some/all the assumption tests are violated, how will you proceed? 
+
+D. Proceed with the analysis, and explain the findings in the light of the hypthesis tests stated at the beginning. ANOVAs, correlations, and regressions will require graphical support; this is not necessary for *t*-tests.
+
+E. Pay attention to formatting. 10% will be allocated to the appearance of the script, including considerations of aspects of the tidiness of the file, the use of appropriate headings, and adherence to code conventions (e.g. spacing etc.).
+
+---
+# The wheat yield data
+
+Please see the file 'fertiliser_crop_data.csv'. The data represent an experiment where the effects of fertiliser type and the density of planting have an effect on the yield of wheat. The dataset contains the following variables:
+
+- Final yield (kg per acre)
+- Type of fertilizer (fertilizer type A, B, or C)
+- Planting density (1 = low density, 2 = high density)
+- Block in the field (north, east, south, west)
+
+**Questions**
+- Do fertiliser type and planting density affect the yield of wheat? 
+- 

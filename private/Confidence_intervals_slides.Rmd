@@ -1,0 +1,163 @@
+---
+title: "Confidence Intervals"
+subtitle: ""  
+author: 
+  - "AJ Smit"
+date: '2020/06/30 (updated: `r Sys.Date()`)'
+output:
+  xaringan::moon_reader:
+    css:
+      - default
+      - "default-fonts.css"
+      - ki
+      - "uwc_logo.css"
+    yolo: false
+    self_contained: TRUE  
+    lib_dir: libs
+    nature:
+      highlightStyle: idea
+      highlightLines: true
+      highlightLanguage: r
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE, echo=FALSE} 
+library(tidyverse)
+library(ggpubr)
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "R>",
+                      message = FALSE,
+                      warning = FALSE,
+                      include = TRUE,
+                      fig.retina = 3,
+                      fig.width = 6,
+                      fig.height = 3.6,
+                      fig.align = "center")
+```
+
+## Confidence Intervals
+
+For more details about a Confidence Intervals, please visit
+<https://rcompanion.org/handbook/C_03.html>
+
+---
+## What are Confidence Intervals for?
+
+Confidence intervals (CIs) determined *for a sample* tell us the range within which we may be certain to find *the true population mean* from which the sample had been drawn. 
+
+If we were to repeatedly sample the same population over and over and calculate a mean every time, the 95% CI indicates the range that 95% of those means would fall into.
+
+It is used to indicate how accurate a calculated statistic is likely to be. It can be calculated for many statistics: the mean, median, slope of a linear regression, etc. The wider the CIs, the less certainty we can attach to estimate of the statistic in question.
+
+When we draw only a small sample size from the population, the CIs will be wide. But the more samples we take, the narrower the CI band becomes.
+
+There are many ways in which CIs can be calculated. We have already seen CIs a couple of times in the course. Let's start there.
+
+---
+## Revisiting *t*-tests
+
+```{r}
+data(iris)
+head(iris)
+```
+
+---
+What is the mean `Sepal.Length` for *Iris setosa*? Is this value significantly different from zero? To do this, we do a one-sample, two-sided *t*-test. The H0 is, "The mean sepal width for *Iris setosa* is 0" (because it is a two-sided test, the mean can be less than 0, or larger than 0).
+
+```{r}
+setosa <- iris %>%
+  filter(Species == "setosa")
+setosa_t_test <- t.test(setosa$Sepal.Length)
+setosa_t_test
+```
+
+---
+We can extract the CI if we want to use it for plots, etc.:
+
+```{r}
+setosa_t_test$conf.int # pull out the CIs only
+```
+
+Same with the mean:
+
+```{r}
+setosa_t_test$estimate
+```
+
+---
+## How does the width of the CI vary by sample size?
+
+Let's assume the population is all the data in the `iris` dataset (across all three species). Let's again look at `Sepal.Length`. From the population, let's draw at random 3, 6, 10, 50, and lastly 100 samples. Let's then see how the width of the CI changes:
+
+```{r, fig.height = 2}
+n <- c(3, 6, 10, 50, 100)
+ci_function <- function(x) {
+  out <- data.frame(mean = t.test(sample(iris$Sepal.Length, x))$estimate,
+                    lower = t.test(sample(iris$Sepal.Length, x))$conf.int[1],
+                    upper = t.test(sample(iris$Sepal.Length, x))$conf.int[2])
+  return(out)
+}
+ci_data <- plyr::ldply(n, ci_function)
+ggplot(data = ci_data, aes(x = n)) +
+  geom_segment(aes(x = n, xend = n, y = lower, yend = upper), size = 1) +
+  geom_point(aes(y = mean), colour = "red3", size = 2, shape = 2) + ylab("Mean ± 95% CI")
+```
+
+---
+## Other ways to calculate CIs for the mean
+
+**Example 1:** Normal data not belonging to any groups. We apply the 'traditional' method (i.e. not bootstrapped). Let's use the `iris` data again. The `~ 1` indicates that we ignore the grouping arrangement of the data:    
+
+```{r}
+library(rcompanion)
+groupwiseMean(Sepal.Length ~ 1, data = iris, conf = 0.95, digits = 3)
+```
+
+**Example 2:** Still staying with normal data, we may also want to consider the `iris` data's grouping (`Species`):
+
+```{r}
+(iris_grps <- groupwiseMean(Sepal.Length ~ Species, data = iris, conf = 0.95, digits = 3))
+```
+
+---
+Continuing with the grouped data example, we may also use the 95% CIs to see if there are significant differences in `Sepal.Length` between the three `Species`. You can interpret the table, above, directly, or we can make a graph:
+
+```{r, fig.height = 2}
+ggplot(data = iris_grps, aes(x = Species)) +
+  geom_segment(aes(x = Species, xend = Species, y = Trad.lower, yend = Trad.upper), size = 1) +
+  geom_point(aes(y = Mean), colour = "red3", size = 2, shape = 2) + ylab("Mean ± 95% CI")
+```
+
+We may interpret the non-overlapping 95% CIs as showing that there are statistically significant differences in Sepal Length between the three *Iris* species.
+
+Looking at the help file (`?groupwiseMean`) we see that we may also apply this function for two-way (two grouping variables) data, as which you would require for a 2-way ANOVA, for example.
+
+---
+**Example 3:** For skewed data (non-normal), confidence intervals by bootstrapping may be more reliable. We can achieve this by setting various options in the `groupwiseMean()` function:
+
+```{r}
+groupwiseMean(Sepal.Length ~ Species, data = iris, conf = 0.95, digits = 3,
+              R = 10000, boot = TRUE, traditional = FALSE, normal = FALSE,
+              basic = FALSE, percentile = FALSE, bca = TRUE)
+```
+
+---
+.left-column[
+# Questions
+]
+
+.right-column[
+1. Using the Lung Capacity data, please calculate the 95% CIs for the `LungCap` variable as a function of:
+
+    a. `Gender`
+    
+    b. `Smoke`
+    
+    c. `Caesarean`
+    
+2. Create a graph of the mean ± 95% CIs (as I have done in the above example), and determine if there are statistical differences in `LungCap` between the levels of `Gender`, `Smoke`, and `Caesarean`. Do the same using a *t*-test. Are your findings the same using these two approaches?
+
+3. Produce all the associated tests for assumptions -- i.e. the assumptions to be met when deciding on which *t*-test to use, or whether you should apply the 'traditional' or bootstrapping approach in the calculation of CIs.
+
+]

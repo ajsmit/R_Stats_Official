@@ -1,0 +1,189 @@
+---
+title: "Correlations"
+subtitle: "Answers"  
+author: 
+  - "AJ Smit"
+date: '2020/07/06 (updated: `r Sys.Date()`)'
+output:
+  xaringan::moon_reader:
+    css:
+      - default
+      - "default-fonts.css"
+      - ki
+      - "uwc_logo.css"
+    yolo: false
+    self_contained: TRUE  
+    lib_dir: libs
+    nature:
+      highlightStyle: idea
+      highlightLines: true
+      highlightLanguage: r
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE, echo=FALSE} 
+library(tidyverse)
+library(ggpubr)
+library(psych)
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "R>",
+                      message = FALSE,
+                      warning = FALSE,
+                      include = TRUE,
+                      fig.retina = 3,
+                      fig.width = 6,
+                      fig.height = 3.6,
+                      fig.align = "center")
+```
+
+
+A note about doing the various analyses in this module. In our online textbook and in the slides that I send you, I use a specific test -- in the case of `t.test()`, `lm()`, and `aov()` you will pretty much always use exactly these functions. Maybe the same is true for the  `wilcox.test()` function that is used for the One-sample Wilcoxon Signed-rank Test and Two-sample Mann-Whitney U Test, and `kruskal.test()` for the Kruskal-Wallis Rank Sum Test.
+
+But each of these has a multitude of other R packages/functions that can be used in stead. You are not *expected* to use the ones I showed you in my demonstrations. Please use anything. The important thing to understand is when to use which test, but use your experience, discretion, or preference to select the function that best works for you. Use the internet!
+
+---
+.left-column[
+# Do a full correlation analysis on the *Iris* dataset
+
+In other words, all three species.
+]
+
+.right-column[
+H0: For none of the *Iris* species, i.e. *Iris setosa*, *I. versicolor*, or *I. virginica*, none of the four measurement variables, i.e. Sepal Length, Sepal Width, Petal Length, and Petal Width, are correlated with one-another.
+
+```{r, message=FALSE}
+data(iris)
+summary(iris)
+```
+]
+
+---
+.left-column[
+]
+
+.right-column[
+```{r}
+str(iris)
+```
+
+Above, we see that there are three species (factors), and within each species there are 50 observations (samples or measurements) of each of four variables that describe some aspect of flower morphology. The data are continuous and paired. With paired I mean that for *each* sepal sample, measurements of *both* its length and width are taken; the same applies for the petals, which were probably sampled from the same flower from which the associated sepal was taken. Since we want to see the association between variables and we cannot state dependence of one measurement on another, we need to do a correlation.
+]
+
+---
+.left-column[
+]
+
+.right-column[
+We already stated the the data are continuous. If the data show linear relationships between variables *and* if the data are normally distributed we can do a Pearson's Product Moment Correlation. If not, we should do a Spearman's *rho* rank correlation instead.
+
+So, lets first check the shape of the relationship, and then test for normality.
+]
+
+---
+.left-column[
+### Are the data linear(-ish)?
+]
+
+.right-column[
+
+```{r, fig.width=6, fig.height=6, fig.align='center'}
+my_cols <- c("salmon", "darkcyan", "darkgoldenrod3") # each species a separate colour
+pairs(iris[,1:4], pch = 19,  cex = 0.5,
+      col = my_cols[iris$Species],
+      upper.panel = NULL)
+```
+]
+
+---
+.left-column[
+]
+
+.right-column[
+The variables show a more-or-less linear relationship for each of the three species. It is not perfect, but it is definitely not terrible. We can anticipate weak/moderate to strong correlations. But should we do a Pearson's or Spearman's correlation? This will depend on the normality of the data.
+]
+
+---
+.left-column[
+### Are the data normally distributed?
+]
+
+.right-column[
+```{r}
+iris %>% 
+  pivot_longer(cols = Sepal.Length:Petal.Width, names_to = "variable", values_to = "measurement") %>% 
+  group_by(Species, variable) %>% 
+  summarise(p_value = round(as.numeric(shapiro.test(measurement)[2]), 3)) %>% 
+  head(5) # to save space...
+```
+The Shapiro-Wilk test tests H0 that the distribution of our sample data is not significantly different from normal. The *p*-value is < 0.05 for only two variables, so we conclude that the variables mostly have normal distributions. It should not be too problematic to simply proceed with the default Pearson's Product Moment Correlation. However, if the presence of two non-normal sample sets bothers you, you are welcome to transform the data to normality, or proceed with a Spearman's *rho* correlation. 
+]
+
+---
+.left-column[
+### Do the Spearman's correlations
+]
+
+.right-column[
+There's many pairs of variables to compare with each other, and it would be silly to do them individually for each permutation. Let's find a function to do so effectively. (Remember, if your coding seems repetitive, find a simpler way to do the same thing.)
+
+We use the package **psych** and its `pairs.panels()` function to create a matix of scatterplots. It shows the bivariate scatterplots in the lower triangle below the diagonal, histograms on the diagonal, and the Spearman's correlation coefficients above the diagonal.
+]
+
+---
+```{r, eval=FALSE}
+library(psych)
+iris %>% 
+  group_by(Species) %>%
+  nest() %>% 
+  dplyr::mutate(cor = map(data, function(df) pairs.panels(df, method = "spearman",
+                                                          hist.col = "#00AFBB", density = TRUE,
+                                                          ellipses = TRUE, stars = TRUE)))
+```
+
+You would be justified to use a Pearson's correlation too if you wanted to (by virtue of the fact that most of the measurements are normally distributed).
+
+---
+```{r, echo=FALSE}
+iris %>% 
+  group_by(Species) %>%
+  nest() %>% 
+  dplyr::mutate(cor = map(data, function(df) pairs.panels(df, method = "spearman",
+                                                          hist.col = "#00AFBB", density = TRUE,
+                                                          ellipses = TRUE, stars = TRUE)))
+```
+
+---
+The earlier complicated-looking code can be more repetitively yet simply written as:
+
+```{r, eval=FALSE}
+setosa <- iris %>% 
+  filter(Species == "setosa") %>% 
+  select(-Species)
+
+pairs.panels(setosa, method = "spearman",
+             hist.col = "#00AFBB", density = TRUE,
+             ellipses = TRUE, stars = TRUE)
+```
+
+Do this for each of the three species. This will produce a separate figure each time.
+
+---
+```{r, fig.width=6, fig.height=6}
+library(GGally)
+source("GGscatterPlot.R") # http://genoweb.toulouse.inra.fr/~pmartin/pgpmartin/2018/11/14/nicer-scatterplot-in-gggally/
+ggpairs(iris, aes(colour = Species, alpha = 0.4),
+        upper = list(continuous = wrap("cor", method = "spearman")))
+```
+
+---
+.left-column[
+### Findings
+]
+
+.right-column[
+Due to the non-normal distribution of two of the measurements in the *Iris* dataset, we performed a Spearman's *rho* correlation of ranks. Of the three *Iris* species assessed, *I. setosa* flower parts show the weakest linear associations between length and width measurements of sepals and petals. For *I. setosa*, the strongest association is between sepal length and sepal width (*r* = 0.755, *p* < 0.05), but other significant albeit weak correlations (*r* < 0.3, *p* < 0.05) are also seen for some variables. The remaining two species show significant positive correlations between all variable pairs, with all such associations being significant at *p* < 0.05. Correlations are generally weak to strong, with *r*-values ranging from 0.316 to 0.824; the strongest correlations are generally seen in *I. virginica*.
+
+Note that the Spearman's rho correlation option was added to the `ggpairs()` function as described [here](http://genoweb.toulouse.inra.fr/~pmartin/pgpmartin/2018/11/14/nicer-scatterplot-in-gggally/). This function will have to be loaded as indicated in the example code on the preceding slide.
+
+]

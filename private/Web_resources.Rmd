@@ -1,0 +1,62 @@
+---
+title: "Web Resources"
+subtitle: "Miscellaneous additional resources"  
+author: 
+  - "AJ Smit"
+date: '2020/06/30 (updated: `r Sys.Date()`)'
+output:
+  xaringan::moon_reader:
+    css:
+      - default
+      - "default-fonts.css"
+      - ki
+      - "uwc_logo.css"
+    yolo: false
+    self_contained: TRUE  
+    lib_dir: libs
+    nature:
+      highlightStyle: idea
+      highlightLines: true
+      highlightLanguage: r
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE, echo=FALSE} 
+library(tidyverse)
+library(ggpubr)
+knitr::opts_chunk$set(echo = TRUE,
+                      comment = "R>",
+                      message = FALSE,
+                      warning = FALSE,
+                      include = TRUE,
+                      fig.retina = 3,
+                      fig.width = 6,
+                      fig.height = 3.6,
+                      fig.align = "center")
+```
+
+Getting Started with R-Series 1 | R Statistical Software Tutorial Videos | MarinStatsLectures
+<https://www.youtube.com/playlist?list=PLqzoL9-eJTNARFXxgwbqGo56NtbJnB37A>
+
+Statistics with R Programming Language: Step by Step | MarinStatsLectures
+<https://www.youtube.com/playlist?list=PLqzoL9-eJTNAz0IuV1nAV7KMkGBf4QcQX>
+
+Data Analysis with R | R for Data Science and Statistics | MarinStatsLectures
+<https://www.youtube.com/user/marinstatlectures/playlists?view=50&sort=dd&shelf_id=14>
+
+Statistics Course for Beginners: Introduction to Statistics | MarinStatsLectures
+<https://www.youtube.com/playlist?list=PLqzoL9-eJTNAB5st3mtP_bmXafGSH1Dtz>
+
+Graphs and Descriptive Statistics with R-Series 2 | R Statistical Software Tutorial Videos | MarinStatsLectures
+<https://www.youtube.com/playlist?list=PLqzoL9-eJTNDsdghuYR70d01YVGIBs29N>
+
+---
+Probability Distributions in R- Series 3 | R Statistical Software Tutorial Videos | MarinStatsLectures
+<https://www.youtube.com/playlist?list=PLqzoL9-eJTNBf1PJKYyEgkbF_9WAlraTF>
+
+Bivariate Analysis in R-Series 4 | R Statistical Software Tutorial Videos | MarinStatsLectures
+<https://www.youtube.com/playlist?list=PLqzoL9-eJTNBjwoVkayq8B3vvmMcNQmJR>
+
+Linear Regression in R-Series 5 | R Statistical Software Tutorial Videos | MarinStatsLectures
+<https://www.youtube.com/playlist?list=PLqzoL9-eJTNBJrvFcN-ohc5G13E7Big0e>

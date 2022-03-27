@@ -119,34 +119,6 @@ chicks <- as_tibble(ChickWeight)
 
 In the Environment pane, the object named `chicks` will now appear under the panel named Data. To the left of it is a small white arrow in a blue circular background. By default the arrow points to the right. Clicking on it causes it to point down, which denotes that the data contained within the tibble have become expanded. The names of the columns (more correctly called 'variables') can now be seen. There you can see the variables `weight`, `Time`, `Chick` and `Diet`. The class of data they represent can be seen too: there's continuous data of class `num`, a variable of `Ord.factor`, and a categorical variable of class `Factor`. Beneath these there's a lot of attributes that denote some meta-data, which you may safely ignore for now.
 
-<!-- ```{r chicks_1, fig.width = 2, echo = FALSE, fig.cap = "What is in the Chicks data?"} -->
-
-<!-- knitr::include_graphics("figures/chicks_1.png") -->
-
-<!-- ``` -->
-
-<!-- ```{r chicks_2, fig.width = 2, echo = FALSE, fig.cap = "This is what is in the Chicks data"} -->
-
-<!-- knitr::include_graphics("figures/chicks_2.png") -->
-
-<!-- ``` -->
-
-```{=tex}
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=0.7\linewidth]{figures/chicks_1}
-\end{center}
-\caption{What is in the Chicks data?}
-\end{figure}
-```
-```{=tex}
-\begin{figure}[h!]
-\begin{center}
-\includegraphics[width=0.7\linewidth]{figures/chicks_2}
-\end{center}
-\caption{This is what is in the Chicks data.}
-\end{figure}
-```
 ### `head()` and `tail()`
 
 The `head()` and `tail()` functions simply display top and bottom portions of the tibble, and you may add the `n` argument and an integer to request that only a certain number of rows are returned; by default the top or bottom six rows are displayed.
