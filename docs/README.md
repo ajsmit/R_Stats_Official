@@ -30,7 +30,7 @@ These links point to online resources such as datasets and R scripts in support 
 
 ## Day 1
 
--   [About](https://ajsmit.github.io/Intro_R_Official/01-about.html)
+-   [About](https://ajsmit.github.io/R_Stats_Official/01-about.html)
 
 -   [Data](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Data.ipynb)
 
@@ -40,7 +40,7 @@ These links point to online resources such as datasets and R scripts in support 
 
 -   [Descriptive statistics](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/Descriptive.ipynb)
 
--   [t-Tests](https://ajsmit.github.io/Intro_R_Official/06-t-Tests.html)
+-   [t-Tests](https://ajsmit.github.io/R_Stats_Official/06-t-Tests.html)
 
 -   [ANOVA](https://github.com/ajsmit/R_Stats_Official/blob/main/jupyter_lab/ANOVA.ipynb)
 
