@@ -1,7 +1,7 @@
-theme: jekyll-theme-console
+remote-theme: tocttou/hacker-blog
 style: hacker
 title: Basic Statistics in R
 description: By Prof. AJ Smit, BCB, UWC
-date: 2022-03-27
+date: "2022-03-27""
 header_pages:
-  - about.md
+  - "about.md"
