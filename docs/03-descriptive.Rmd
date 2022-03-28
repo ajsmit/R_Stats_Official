@@ -293,7 +293,7 @@ grp_stat <- chicks %>%
             min_wt = min(weight),
             qrt1_wt = quantile(weight, p = 0.25),
             med_wt = median(weight),
-            qrt3_wt = median(weight, p = 0.75),
+            qrt3_wt = quantile(weight, p = 0.75),
             max_wt = max(weight),
             n_wt = n())
 grp_stat
@@ -351,4 +351,6 @@ ggarrange(plt1, plt2, plt3, plt4, ncol = 2, nrow = 2, labels = "AUTO")
 
 ## Exercises
 
-> **Exercise 1** Notice how the data summary for chicken weights contained within `wt_summary` is very similar to the summary returned for `weight` when we apply `summary(chicks)`. Please use the `summarise()` approach and construct a data summary with exactly the same summary statistics for `weight` as that which `summary()` returns.
+> **Exercise 1** Use the 'BeachBirds.csv' dataset. For each bird species and sex (i.e. `Species` x `Sex`), calculate the summary statistics mean, median, standard error, standard deviation, and first and third quartiles for both measured variables (`flush.dist` and `land.dist`).
+
+> **Exercise 2** Notice how the data summary for chicken weights contained within `wt_summary` is very similar to the summary returned for `weight` when we apply `summary(chicks)`. Please use the `summarise()` approach and construct a data summary with exactly the same summary statistics for `weight` as that which `summary()` returns.
