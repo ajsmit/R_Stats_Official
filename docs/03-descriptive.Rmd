@@ -307,7 +307,7 @@ grp_stat
 
 There are several kinds of graphical displays for your data. We will show some which are able to display the spread of the raw data, the mean or median, as well as the appropriate accompanying indicators of variation around the mean or median.
 
-```{r descriptive-plot1, fig.cap = "A) Scatterplot of the mean and raw chicken mass values. B) Bar graph of the chicken mass values, showing whiskers indicating 1 ±SD. C) Box and whisker plot of the chicken mass data."}
+```{r descriptive-plot1, fig.cap = "The figures represent A) a scatterplot of the mean and raw chicken mass values; B) a bar graph of the chicken mass values, showing whiskers indicating 1 ±SD; C) a box and whisker plot of the chicken mass data; and D) chicken mass as a function of both `Diet` and `Time` (10 and 21 days)."}
 library(ggpubr) # needed for arranging multi-panel plots
 plt1 <- chicks %>%
   filter(Time == 21) %>% 
@@ -351,6 +351,8 @@ ggarrange(plt1, plt2, plt3, plt4, ncol = 2, nrow = 2, labels = "AUTO")
 
 ## Exercises
 
-> **Exercise 1** Use the 'BeachBirds.csv' dataset. For each bird species and sex (i.e. `Species` x `Sex`), calculate the summary statistics mean, median, standard error, standard deviation, and first and third quartiles for both measured variables (`flush.dist` and `land.dist`).
+> **Exercise 1:** Use the 'BeachBirds.csv' dataset. For each bird species and sex (i.e. `Species` x `Sex`), calculate the summary statistics mean, median, standard error, standard deviation, and first and third quartiles for both measured variables (`flush.dist` and `land.dist`).
 
-> **Exercise 2** Notice how the data summary for chicken weights contained within `wt_summary` is very similar to the summary returned for `weight` when we apply `summary(chicks)`. Please use the `summarise()` approach and construct a data summary with exactly the same summary statistics for `weight` as that which `summary()` returns.
+> **Exercise 2:** Using the 'BeachBirds.csv' data, create a panel of four graphs similar to the ones shown above. I.e. for each bird species A) a scatterplot of 'raw values' and the corresponding means; B) a bar graph with whiskers; C) a box-and-whisker plot; and D) box-and-whisker plots that also take into account the birds' sex. Use only one of the measurement variables.
+
+> **Exercise 3:** Notice how the data summary for chicken weights contained within `wt_summary` is very similar to the summary returned for `weight` when we apply `summary(chicks)`. Please use the `summarise()` approach and construct a data summary with exactly the same summary statistics for `weight` as that which `summary()` returns.
