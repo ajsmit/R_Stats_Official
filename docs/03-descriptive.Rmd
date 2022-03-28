@@ -53,7 +53,7 @@ length(chicks$weight)
 
 Note that this gives us the number of all of the chicks in the experiment, irrespective oif which diet they were given. It will make more sense to know how many chicks were assigned to each of the experimental diets they were raised on.
 
-> **Task:** Figure out the number of chicks in each of the feed categories.
+> **Task 1:** Figure out the number of chicks in each of the feed categories.
 
 ## Measures of central tendency
 
@@ -98,7 +98,7 @@ We can achieve the same using the more traditional syntax, which in some instanc
 mean(chicks$weight)
 ```
 
-> **Task:** How would you manually calculate the mean mass for the chicks? Do it now!
+> **Task 2:** How would you manually calculate the mean mass for the chicks? Do it now!
 
 Notice above how the two approaches display the result differently: in the first instance, using `summarise()`, the answer is rounded to zero decimal places; in the second, it is displayed (here) at full precision. The precision of the answer that you require depends on the context of your study, so make sure that you use the appropriate number of significant digits. Using the `summarise()` approach again, here is how you can adjust the number of decimal places of the answer:
 
@@ -109,7 +109,7 @@ chicks %>%
   summarise(mean_wt = round(mean(weight), 1))
 ```
 
-> **Task:** What happens when there are missing values (`NA`)? Consult the help file for the `mean()` function, discuss amongst yourselves, and then provide a demonstration to the class of how you would handle missing values. Hint: use the `c()` function to capture a series of data that you can then use to demonstrate your understanding.
+> **Task 3:** What happens when there are missing values (`NA`)? Consult the help file for the `mean()` function, discuss amongst yourselves, and then provide a demonstration to the class of how you would handle missing values. Hint: use the `c()` function to capture a series of data that you can then use to demonstrate your understanding.
 
 At this point it might be useful to point out that the mean (or any function for that matter, even one that does not yet exist) can be programatically calculated. Let us demonstrate the principle by reproducing the mean function from the constituent parts:
 
@@ -120,7 +120,7 @@ chicks %>%
 
 The mean is quite sensitive to the presence of outliers or extreme values in the data, and it is advised that its use be reserved for normally distributed data from which the extremes/outliers have been removed. When extreme values are indeed part of our data and not simply 'noise,' then we have to resort to a different measure of central tendency: the median.
 
-> **Task:** In statistics, what do we mean with 'noise'?
+> **Task 4:** In statistics, what do we mean with 'noise'?
 
 ### The median
 
@@ -144,7 +144,7 @@ library(e1071)
 skewness(faithful$eruptions)
 ```
 
-> **Task:** Is the distribution left or right skewed?
+> **Task 5:** Is the distribution left or right skewed?
 
 ### Kurtosis
 
@@ -218,7 +218,7 @@ chicks %>%
 # in the summarise() implementation, above
 ```
 
-> **Task:** What is different about the `quantile()` function that caused us to specify the calculation in the way in which we have done so above? You will have to consult the help file, read it, understand it, think about it, and experiment with the ideas. Take 15 minutes to figure it out and report back to the class.
+> **Task 6:** What is different about the `quantile()` function that caused us to specify the calculation in the way in which we have done so above? You will have to consult the help file, read it, understand it, think about it, and experiment with the ideas. Take 15 minutes to figure it out and report back to the class.
 
 ### The minimum, maximum and range
 
@@ -243,12 +243,13 @@ chicks %>%
   summarise(range_wt = range(weight)[2] - range(weight)[1])
 ```
 
-### Covariance
+<!--- ### Covariance --->
 
-### Correlation
+```{=html}
+<!--- ### Correlation
 
-The correlation coefficient of two matched (paired) variables is equal to their covariance divided by the product of their individual standard deviations. It is a normalised measurement of how linearly related the two variables are.
-
+The correlation coefficient of two matched (paired) variables is equal to their covariance divided by the product of their individual standard deviations. It is a normalised measurement of how linearly related the two variables are. --->
+```
 <!-- include the equation -->
 
 <!-- include example here -->
@@ -297,6 +298,8 @@ grp_stat <- chicks %>%
             n_wt = n())
 grp_stat
 ```
+
+> **Task 7:** Caclculate the Standard Error for each diet group of chicks at the start and end of the experiment.
 
 ### Displays of group summaries
 

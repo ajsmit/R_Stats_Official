@@ -7,7 +7,7 @@
 
         <meta name="author" content="AJ Smit" />
     
-        <meta name="date" content="2022-03-27" />
+        <meta name="date" content="2022-03-28" />
     
     <title>Types of data</title>
 
@@ -1634,14 +1634,15 @@ src: url(data:application/font-sfnt;base64,AAEAAAARAQAABAAQR0RFRgs+Cz8AAjwQAAAAQ
     <h2><a href="#content">Types of data</a></h2>
     <div id="toc">
       <ul>
+      <li><a href="#recap-working-with-data">Recap: working with
+      data</a></li>
       <li><a href="#data-classes">Data classes</a></li>
-      <li><a href="#viewing-our-data">Viewing our data</a></li>
       </ul>
     </div>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
                   <p class="author"><span class="glyphicon glyphicon-user"></span> AJ
 Smit</p>
-                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 2022-03-27</p>
+                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 2022-03-28</p>
           </div>
    </div>
      
@@ -1656,11 +1657,11 @@ Smit</p>
 <p><em>“The plural of anecdote is not data.”</em></p>
 <p>— Roger Brinner</p>
 </blockquote>
-<p>In this chapter we will, firstly, look at the different kinds of
-biological and environmental data that are typically encountered by most
-biologists. The data seen here are not an exhaustive list of all the
-various types of data out there, but it should represent the bulk of our
-needs.</p>
+<p>In this chapter we will, firstly, recap how to work with data in R.
+Then we will look at the different kinds of biological and environmental
+data that are typically encountered by most biologists. The data seen
+here are not an exhaustive list of all the various types of data out
+there, but it should represent the bulk of our needs.</p>
 <p>After we have become familiar with the different kinds of data, we
 will look at summaries of these data, which is generally required as the
 starting point for our analyses. After summarising the data in tables
@@ -1668,6 +1669,324 @@ and so forth, we may want to produce graphical summaries to see broad
 patterns and trends; visual data representations, which complement the
 tabulated data, will be covered in a later chapter (Chapter 4). Both of
 these approaches form the basis of ‘exploratory data analysis.’</p>
+<div id="recap-working-with-data" class="section level2">
+<h2>Recap: working with data</h2>
+<p>We revisit the process for reading data into R. R will read in many
+types of data, including spreadsheets, text files, binary files, and
+files from other statistical packages.</p>
+<div id="preparing-data" class="section level3">
+<h3>Preparing data</h3>
+<p>For R to be able to analyse your data, it needs to be in a consistent
+format, with each variable in its own column and each sample in its own
+row. This is called tidy data. The format within each variable (column)
+needs to be consistent and is commonly one of the following types: a
+continuous <code>numeric</code> variable (e.g., fish length (say in m):
+0.133, 0.145); a <code>factor</code> or categorical variable (e.g.,
+algal colour: red, green, brown); a <code>logical</code> variable (i.e.,
+<code>TRUE</code> or <code>FALSE</code>), or a <code>date</code>
+(e.g. <code>1981-09-01</code> or some other accepted date or time
+format). You can also use other more specific general text
+(<code>string</code>) formats.</p>
+</div>
+<div id="naming-variables" class="section level3">
+<h3>Naming variables</h3>
+<p>R has pedantic requirements for naming variables. It is safest to not
+use spaces, special characters (e.g., commas, semicolons, any of the
+shift characters above the numbers), or function names (e.g., mean). In
+fact, I strongly suggest never to use spaces in variables, filenames,
+etc.</p>
+</div>
+<div id="dataframes" class="section level3">
+<h3>Dataframes</h3>
+<p>Generally, the best way to store your data is to put all your
+biological and environmental data into one dataframe so that you can
+analyse them together. This requires having the first few variables
+(columns) as descriptors of each of your samples (e.g.,
+<code>Site</code>, <code>Species</code>, <code>Sex</code>,
+<code>flush.dist</code>, etc). Each column has the same number of rows,
+so that it resembles a matrix. In essence, each row contains a data
+point (an observation; this will often reflect the response variable in
+your analysis), plus as many descriptors for that data point as is
+available (these are generally the explanatory variables in an
+analysis). In this module we will rely on the <strong>tidyverse</strong>
+approach for handling data, and in this context a dataframe is called a
+<code>tibble</code>.</p>
+<pre><code>R&gt;   Site       Species    Sex flush.dist land.dist
+R&gt; 1    1 Oystercatcher Female       12.8     150.9
+R&gt; 2    1 Oystercatcher   Male        4.4     114.1
+R&gt; 3    1 Oystercatcher Female        9.5     153.7
+R&gt; 4    1 Oystercatcher Female       12.2     137.7
+R&gt; 5    1 Oystercatcher Female       10.1     143.3
+R&gt; 6    1 Oystercatcher   Male        6.6     142.8</code></pre>
+</div>
+<div id="setting-the-r-project" class="section level3">
+<h3>Setting the R Project</h3>
+<p>An important aspect of any program is its working directory (or
+folder). This is where R will read files from and write files to.
+RStudio displays the current working directory within the title region
+of the Console. The recommended way to deal with working directories is
+to use the RStudio Project feature: click on the File menu, select New
+Project, and give it an appropriate name (again, don’t use spaces). A
+new RStudio window will then open and the File pane within RStudio will
+then show all the files associated with this particular set of analysis
+(typically a Project is associated with a suite of analyses, e.g., you’d
+want one for all the analyses that will contribute towards your Hons
+project). All your data files will also be within the Project folder.
+The Project will reflect an actual place in your computer’s file system
+– know how to navigate there using the Windows Explorer (Windows) or
+Finder (Mac).</p>
+<p>Once the Project has been set up correctly, you’ll see the name of
+the project reflected in the top right corner of the RStudio window
+(from there you can also select other projects that you have set up
+previously).</p>
+</div>
+<div id="read-in-data" class="section level3">
+<h3>Read in data</h3>
+<p>We are going to read in the Beach Birds dataset provided. These data
+reflect results of an experiment on beaches designed to measure the
+influence of off-road vehicles (ORVs) on shorebirds. Some colleagues
+visited five different beaches on the Sunshine Coast
+(<code>Sites</code>), Queensland, Australia, and at each site, drove
+along the shoreline in an ORV. As they drove along, they identified
+birds in the distance, and drove at them until they took flight. They
+recorded the species (<code>Species</code>) and sex (<code>Sex</code>)
+of the bird, the distance of the ORV from the bird at which it took
+flight (<code>flush.dist</code>), as well as the distance the bird flew
+before settling again (<code>land.dist</code>). In instances where sex
+could not be determined, or where birds flew out of sight before
+landing, they marked observations NA.</p>
+<p>Often the first task is to convert an Excel file into a .csv file,
+which is my recommended format for getting data into R. I have already
+done this, but you would open the Excel file (e.g. BeachBirds.xlsx),
+then select “Save As” from the File menu. In the Format drop-down menu,
+select the option called “Comma Separated Values”, then hit Save. You’ll
+get a warning that formatting will be removed and that only one sheet
+will be exported; simply Continue. When saving this new file, be sure to
+select a folder that you can find. Look in that folder (directory) and
+make sure that you see BeachBirds.csv. Sometimes this file might not
+actually have commas inbetween the fileds (columns), but semi-colons “;”
+instead – use a text editor and see what’s inside. Set up the
+<code>read.csv()</code> function appropriately to deal with commas or
+semi-colons (i.e. by using the <code>sep = &quot;&quot;</code> argument.</p>
+<p>Now let’s start writing the script by clicking on the New Document
+Button (in the top-left corner of the RStudio window, and selecting R
+Script). It is recommended to start a script with some basic information
+for you to refer back to later. Start with a comment line (the line
+begins with a #) that tells you the name of the script, something about
+the script, who created it, and the date it was created. In the Source
+Editor enter:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Beachbirds.R. Reads in and manipulates bird data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># &lt;YourName&gt; &lt;CurrentDate&gt;</span></span></code></pre></div>
+<blockquote>
+<p><strong>TIP: Comments</strong> The hash (<code>#</code>) tells R not
+to run any of the text on that line to right of the symbol. This is the
+standard way of commenting/annotating R code; it is VERY good practice
+to comment in detail so that you can understand later what you have
+done. Note that you can comment out entire blocks of code by
+highlighting it in the Source Editor and going to the menu Code and then
+choosing Comment/Uncomment Lines.</p>
+</blockquote>
+<blockquote>
+<p><strong>TIP: Splitting lines of code</strong> If you have long lines
+of code, then you can spread them over multiple lines. You just have to
+make sure that R knows something is coming, either by leaving a bracket
+open, or ending the line with an operator.</p>
+</blockquote>
+<p>So now we can save our script Choose File/Save As/ and type in
+“BeachBirds”. It will automatically add a “.r” extension. But where will
+it save it? Yes, that’s right, the Working Directory specified by the
+Project we set up initially.</p>
+</div>
+<div id="importing-data" class="section level3">
+<h3>Importing data</h3>
+<p>Now we have the Project set, and R will know where to look for the
+files we read. The function <code>read.csv()</code> is the most
+convenient way to read in most biological data. There are several other
+ways to read in data, but <code>.csv</code> is usually the easiest. To
+find out what it does, we will read its help entry:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>?read.csv</span></code></pre></div>
+<p>All R Help items are in the same format. A short Description (of what
+it does), Usage, Arguments (the different inputs it requires), Details
+(of what it does), Value (what it returns) and Examples. Arguments (the
+parameters that are passed to the function) are the lifeblood of any
+function, as this is how you provide information to R. You do not need
+to specify all arguments, as many have appropriate default values, and
+others might not be needed for your particular case.</p>
+<p>There are many arguments that you can use to customize reading of
+your data, but most important are:</p>
+<ol style="list-style-type: decimal">
+<li><p>file: the name of the data file to be read (this needs to include
+its path if it is not in your specified working directory); note that
+file names must be placed within quotation marks</p></li>
+<li><p>header: is a logical argument (TRUE/FALSE) that specifies whether
+R reads the first line of your file as the names of the variables it
+contains</p></li>
+<li><p>quote: By default, character strings can be quoted by either
+single ’ or double ” quotes and usually do not need to be changed when
+exporting data as .csv from Excel. Let’s assign the data in the file
+BeachBirds.csv to a variable called <code>birds</code>:</p></li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>birds <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;../data/BeachBirds.csv&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>Remember that specifying <code>header = TRUE</code> indicates to R
+that the first row in the spreadsheet contains variable (column) names
+(headers). Note, also, that you can omit this argument, as
+<code>header = TRUE</code> is the default argument in
+<code>read.csv()</code>.</p>
+<p>We can see that we have an object called <code>birds</code>. We can
+find out what sort of object <code>birds</code> is by typing:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(birds)</span></code></pre></div>
+<pre><code>R&gt; [1] &quot;data.frame&quot;</code></pre>
+<p>In this case, <code>birds</code> is a dataframe.</p>
+<blockquote>
+<p><strong>TIP: Stick with .csv files</strong> There are packages in R
+to read in Excel spreadsheets (e.g., xlsx), but remember there are
+likely to be problems reading in formulae, graphs, macros and multiple
+worksheets. We recommend exporting data deliberately to .csv files
+(which are also commonly used in other programs). This not only avoids
+complications, but also allows you to unambiguously identify the data
+you based your analysis on. This last statement should give you the hint
+that it is good practice to name your .csv slightly differently each
+time you export it from Excel, perhaps by appending a reference to the
+date it was exported. Also, for those of you who use commas in Excel as
+the decimal separator, or to separate 1000s, undo these features
+now.</p>
+</blockquote>
+<blockquote>
+<p><strong>TIP: Dealing with missing data</strong> The .csv file format
+is usually the most robust for reading data into R. Where you have
+missing data (blanks), the .csv format separates these by commas.
+However, there can be problems with blanks if you read in a
+space-delimited format file. If you are having trouble reading in
+missing data as blanks, try replacing them in your spreadsheet with NA,
+the missing data code in R. In Excel, highlight the area of the
+spreadsheet that includes all the cells you need to fill with NA. Do an
+Edit/Replace… and leave the “Find what:” textbox blank and in the
+“Replace with:” textbox enter NA, the missing value code. Once imported
+into R, the NA values will be recognised as missing data.</p>
+</blockquote>
+</div>
+<div id="viewing-our-data" class="section level3">
+<h3>Viewing our data</h3>
+<p>There are many ways of finding broad views of our data in R. The
+first few functions that we will look at were designed to simply
+scrutinise the contents of the tibbles, which is the ‘tidyverse’ name
+for the general ‘container’ that holds our data in the software’s
+environment (i.e. in a block of the computer’s memory dedicated to the R
+software). Whatever data are in R’s environment will be seen in the
+‘Environment’ tab in the top right of RStudio’s four panes.</p>
+<div id="from-the-environment-pane" class="section level4">
+<h4>From the Environment pane</h4>
+<p>The first way to see what’s in the tibble is not really a function at
+all, but a convenient (and lazy) way of quickly seeing a few basic
+things about our data. Let us look at the <code>BeachBirds</code> data.
+Load it like so (you’ll remember from the Intro R Workshop):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>birds <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;../data/BeachBirds.csv&quot;</span>)</span></code></pre></div>
+<p>In the Environment pane, the object named <code>birds</code> will now
+appear under the panel named Data. To the left of it is a small white
+arrow in a blue circular background. By default the arrow points to the
+right. Clicking on it causes it to point down, which denotes that the
+data contained within the tibble have become expanded. The names of the
+columns (more correctly called ‘variables’) can now be seen. There you
+can see the variables <code>Site</code>, <code>Species</code>,
+<code>Sex</code>, <code>flush.dist</code>, and <code>land.dist</code>.
+The class of data they represent can be seen too: there’s continuous
+data of class <code>num</code>, a variable of <code>chr</code>, and a
+one of class <code>int</code>. Beneath these there’s a lot of attributes
+that denote some meta-data, which you may safely ignore for now.</p>
+</div>
+<div id="head-and-tail" class="section level4">
+<h4><code>head()</code> and <code>tail()</code></h4>
+<p>The <code>head()</code> and <code>tail()</code> functions simply
+display top and bottom portions of the tibble, and you may add the
+<code>n</code> argument and an integer to request that only a certain
+number of rows are returned; by default the top or bottom six rows are
+displayed.</p>
+<p>There are various bits of additional information printed out. The
+display will change somewhat if there are many more variables than that
+which can comfortably fit within the width of the output window
+(typically the Console). The same kinds of information as was returned
+with the Environment pane expansion arrow are displayed, but the data
+class is now accompanied by an angle bracket
+(i.e. <code>&lt;...&gt;</code>) notation. For example, <code>num</code>
+in the Environment pane and <code>&lt;dbl&gt;</code> as per the
+<code>head()</code> or <code>tail()</code> methods are exactly the same:
+both denote continuous (or ‘double precision’) data.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(birds)</span></code></pre></div>
+<pre><code>R&gt;   Site       Species    Sex flush.dist land.dist
+R&gt; 1    1 Oystercatcher Female       12.8     150.9
+R&gt; 2    1 Oystercatcher   Male        4.4     114.1
+R&gt; 3    1 Oystercatcher Female        9.5     153.7
+R&gt; 4    1 Oystercatcher Female       12.2     137.7
+R&gt; 5    1 Oystercatcher Female       10.1     143.3
+R&gt; 6    1 Oystercatcher   Male        6.6     142.8</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(birds, <span class="at">n =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>R&gt;     Site Species    Sex flush.dist land.dist
+R&gt; 398    5    Gull Female        9.4      50.5
+R&gt; 399    5    Gull Female       10.1      52.1</code></pre>
+<p>As an alternative to <code>head()</code>, you may also simply type
+the name of the object (here <code>birds</code>) in the Console (or
+write it in the Source Editor if it is necessary to retain the function
+for future use) and the top portion of the tibble will be displayed,
+again trimmed to account for the width of the display.</p>
+</div>
+<div id="colnames" class="section level4">
+<h4><code>colnames()</code></h4>
+<p>This function simply returns a listing of the variable (column)
+names.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(birds)</span></code></pre></div>
+<pre><code>R&gt; [1] &quot;Site&quot;       &quot;Species&quot;    &quot;Sex&quot;        &quot;flush.dist&quot; &quot;land.dist&quot;</code></pre>
+<p>There is an equivalent function called <code>rownames()</code> that
+may be used to show the names of rows in your tibble, if these are
+present. Row names are generally discouraged, and we will refrain from
+using them here.</p>
+</div>
+<div id="summary" class="section level4">
+<h4><code>summary()</code></h4>
+<p>The next way to see the contents of the tibble is to apply the
+<code>summary()</code> function. Here we see something else. Some
+descriptive statistics that describe properties of the full set of data
+are now visible. These summary statistics condense each of the variables
+into numbers that describe some properties of the data within each
+column. You will already know the concepts of the ‘minimum,’ ‘median,’
+‘mean,’ and ‘maximum.’ These are displayed here.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(birds)</span></code></pre></div>
+<pre><code>R&gt;       Site        Species              Sex              flush.dist   
+R&gt;  Min.   :1.00   Length:399         Length:399         Min.   : 0.00  
+R&gt;  1st Qu.:2.00   Class :character   Class :character   1st Qu.: 5.30  
+R&gt;  Median :3.00   Mode  :character   Mode  :character   Median : 8.30  
+R&gt;  Mean   :2.89                                         Mean   : 8.14  
+R&gt;  3rd Qu.:4.00                                         3rd Qu.:10.90  
+R&gt;  Max.   :5.00                                         Max.   :20.00  
+R&gt;    land.dist     
+R&gt;  Min.   :  5.60  
+R&gt;  1st Qu.: 42.50  
+R&gt;  Median : 64.40  
+R&gt;  Mean   : 73.12  
+R&gt;  3rd Qu.: 90.10  
+R&gt;  Max.   :199.90</code></pre>
+<p>This will serve well as an introduction to the next chapter, which is
+about descriptive statistics. What are they, and how do we calculate
+them?</p>
+<blockquote>
+<p><strong>Task 1:</strong> Now that we have refreshed our memory you
+should start to remember how to work with our data. In a new R script,
+list a few other approaches available for interrogating our dataframe
+and finding some more details about it.</p>
+</blockquote>
+<blockquote>
+<p><strong>Task 2:</strong> The next thing we want to do is to subset
+and filter our data. In the newly created R script, write down some
+lines of code that will subset and filter the beach birds data in
+interesitng and useful ways. Always provide ample comments to indicate
+what it you are doing, and why you’re doing it. Hint: you’ll want to use
+the <strong>tidyverse</strong> package.</p>
+</blockquote>
+<p>This will show you what the data for Sex and for flush.dist look
+like.</p>
+</div>
+</div>
+</div>
 <div id="data-classes" class="section level2">
 <h2>Data classes</h2>
 <p>In biology we will encounter many kinds of data, and depending on
@@ -1813,123 +2132,6 @@ that below countless rocks, and around a legion of corners, lay in wait
 a myriad of complex data types. We will encounter many of these at the
 end of this course when we encounter modeling, but by then we will have
 learned a few techniques that will prepare us for the encounter.</p>
-</div>
-</div>
-<div id="viewing-our-data" class="section level2">
-<h2>Viewing our data</h2>
-<p>There are many ways of finding broad views of our data in R. The
-first few functions that we will look at were designed to simply
-scrutinise the contents of the tibbles, which is the ‘tidyverse’ name
-for the general ‘container’ that holds our data in the software’s
-environment (i.e. in a block of the computer’s memory dedicated to the R
-software). Whatever data are in R’s environment will be seen in the
-‘Environment’ tab in the top right of RStudio’s four panes.</p>
-<div id="from-the-environment-pane" class="section level3">
-<h3>From the Environment pane</h3>
-<p>The first way to see what’s in the tibble is not really a function at
-all, but a convenient (and lazy) way of quickly seeing a few basic
-things about our data. Let us look at the <code>ChickWeight</code> data.
-Load it like so (you’ll remember from the Intro R Workshop):</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># loads the tidyverse functions; it contains the &#39;as_tibble()&#39; function</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># the &#39;ChickWeight&#39; data are built into R;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># here we assign it as a tibble to an object named &#39;chicks&#39;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>chicks <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(ChickWeight)</span></code></pre></div>
-<p>In the Environment pane, the object named <code>chicks</code> will
-now appear under the panel named Data. To the left of it is a small
-white arrow in a blue circular background. By default the arrow points
-to the right. Clicking on it causes it to point down, which denotes that
-the data contained within the tibble have become expanded. The names of
-the columns (more correctly called ‘variables’) can now be seen. There
-you can see the variables <code>weight</code>, <code>Time</code>,
-<code>Chick</code> and <code>Diet</code>. The class of data they
-represent can be seen too: there’s continuous data of class
-<code>num</code>, a variable of <code>Ord.factor</code>, and a
-categorical variable of class <code>Factor</code>. Beneath these there’s
-a lot of attributes that denote some meta-data, which you may safely
-ignore for now.</p>
-<!-- ```{r chicks_1, fig.width = 2, echo = FALSE, fig.cap = "What is in the Chicks data?"} -->
-<!-- knitr::include_graphics("figures/chicks_1.png") -->
-<!-- ``` -->
-<!-- ```{r chicks_2, fig.width = 2, echo = FALSE, fig.cap = "This is what is in the Chicks data"} -->
-<!-- knitr::include_graphics("figures/chicks_2.png") -->
-<!-- ``` -->
-</div>
-<div id="head-and-tail" class="section level3">
-<h3><code>head()</code> and <code>tail()</code></h3>
-<p>The <code>head()</code> and <code>tail()</code> functions simply
-display top and bottom portions of the tibble, and you may add the
-<code>n</code> argument and an integer to request that only a certain
-number of rows are returned; by default the top or bottom six rows are
-displayed.</p>
-<p>There are various bits of additional information printed out. The
-display will change somewhat if there are many more variables than that
-which can comfortably fit within the width of the output window
-(typically the Console). The same kinds of information as was returned
-with the Environment pane expansion arrow are displayed, but the data
-class is now accompanied by an angle bracket
-(i.e. <code>&lt;...&gt;</code>) notation. For example, <code>num</code>
-in the Environment pane and <code>&lt;dbl&gt;</code> as per the
-<code>head()</code> or <code>tail()</code> methods are exactly the same:
-both denote continuous (or ‘double precision’) data.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(chicks)</span></code></pre></div>
-<pre><code>R&gt; # A tibble: 6 × 4
-R&gt;   weight  Time Chick Diet 
-R&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;ord&gt; &lt;fct&gt;
-R&gt; 1     42     0 1     1    
-R&gt; 2     51     2 1     1    
-R&gt; 3     59     4 1     1    
-R&gt; 4     64     6 1     1    
-R&gt; 5     76     8 1     1    
-R&gt; 6     93    10 1     1</code></pre>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(chicks, <span class="at">n =</span> <span class="dv">2</span>)</span></code></pre></div>
-<pre><code>R&gt; # A tibble: 2 × 4
-R&gt;   weight  Time Chick Diet 
-R&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;ord&gt; &lt;fct&gt;
-R&gt; 1    264    20 50    4    
-R&gt; 2    264    21 50    4</code></pre>
-<p>As an alternative to <code>head()</code>, you may also simply type
-the name of the object (here <code>chicks</code>) in the Console (or
-write it in the Source Editor if it is necessary to retain the function
-for future use) and the top portion of the tibble will be displayed,
-again trimmed to account for the width of the display.</p>
-</div>
-<div id="colnames" class="section level3">
-<h3><code>colnames()</code></h3>
-<p>This function simply returns a listing of the variable (column)
-names.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(chicks)</span></code></pre></div>
-<pre><code>R&gt; [1] &quot;weight&quot; &quot;Time&quot;   &quot;Chick&quot;  &quot;Diet&quot;</code></pre>
-<p>There is an equivalent function called <code>rownames()</code> that
-may be used to show the names of rows in your tibble, if these are
-present. Row names are generally discouraged, and we will refrain from
-using them here.</p>
-</div>
-<div id="summary" class="section level3">
-<h3><code>summary()</code></h3>
-<p>The next way to see the contents of the tibble is to apply the
-<code>summary()</code> function. Here we see something else. Some
-descriptive statistics that describe properties of the full set of data
-are now visible. These summary statistics condense each of the variables
-into numbers that describe some properties of the data within each
-column. You will already know the concepts of the ‘minimum,’ ‘median,’
-‘mean,’ and ‘maximum.’ These are displayed here.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(chicks)</span></code></pre></div>
-<pre><code>R&gt;      weight           Time           Chick     Diet   
-R&gt;  Min.   : 35.0   Min.   : 0.00   13     : 12   1:220  
-R&gt;  1st Qu.: 63.0   1st Qu.: 4.00   9      : 12   2:120  
-R&gt;  Median :103.0   Median :10.00   20     : 12   3:120  
-R&gt;  Mean   :121.8   Mean   :10.72   10     : 12   4:118  
-R&gt;  3rd Qu.:163.8   3rd Qu.:16.00   17     : 12          
-R&gt;  Max.   :373.0   Max.   :21.00   19     : 12          
-R&gt;                                  (Other):506</code></pre>
-<p>This will serve well as an introduction to the next chapter, which is
-about descriptive statistics. What are they, and how do we calculate
-them?</p>
-<blockquote>
-<p><strong>Task:</strong> Please find a few more ways in which one can
-scrutinise our data within R and/or RStudio.</p>
-</blockquote>
 </div>
 </div>
 </div>

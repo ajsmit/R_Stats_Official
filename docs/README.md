@@ -1,3 +1,5 @@
+These notes are provided to students at the BioStatistics in R (BCB744) Workshop, held at The University of the Western Cape, 28 March - 1 April 2022.
+
 > *"An approximate answer to the right problem is worth a good deal more than an exact answer to an approximate problem."*
 >
 > --- John Tukey
@@ -28,12 +30,12 @@ These links point to online resources such as datasets and R scripts in support 
 
 ## Day 1
 
-[About](https://ajsmit.github.io/R_Stats_Official/01-introduction.html) \| [Data](https://ajsmit.github.io/R_Stats_Official/02-data.html) \| [Graphics](https://ajsmit.github.io/R_Stats_Official/04-graphics.html)
+[Introduction](https://ajsmit.github.io/R_Stats_Official/01-introduction.html) \| [Data](https://ajsmit.github.io/R_Stats_Official/02-data.html) \|[Descriptive statistics](https://ajsmit.github.io/R_Stats_Official/03-descriptive.html) \| [Graphics](https://ajsmit.github.io/R_Stats_Official/04-graphics.html)
 
 ## Day 2
 
-[Descriptive statistics](https://ajsmit.github.io/R_Stats_Official/03-descriptive.html) \| [t-Tests](https://ajsmit.github.io/R_Stats_Official/06-t_tests.html) \| [ANOVA](https://ajsmit.github.io/R_Stats_Official/07-anova.html)
+[t-Tests](https://ajsmit.github.io/R_Stats_Official/06-t_tests.html) \| [ANOVA](https://ajsmit.github.io/R_Stats_Official/07-anova.html) \| [Regression](https://ajsmit.github.io/R_Stats_Official/08-regression.html)
 
 ## Day 3
 
-[Regression](https://ajsmit.github.io/R_Stats_Official/08-regression.html) \| [Correlation](https://ajsmit.github.io/R_Stats_Official/09-rorrelation.html) \| [Confidence intervals](https://ajsmit.github.io/R_Stats_Official/10-confidence.html) \| [Assumptions](https://ajsmit.github.io/R_Stats_Official/11-transformations.html)
+[Correlation](https://ajsmit.github.io/R_Stats_Official/09-rorrelation.html) \| [Confidence intervals](https://ajsmit.github.io/R_Stats_Official/10-confidence.html) \| [Assumptions](https://ajsmit.github.io/R_Stats_Official/11-transformations.html)

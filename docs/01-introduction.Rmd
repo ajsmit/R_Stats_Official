@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "About"
 author: "AJ Smit"
 date: "`r Sys.Date()`"
 output:
@@ -13,7 +13,7 @@ output:
   highlight: tango
 ---
 
-<!--- # Introduction --->
+<!--- # About --->
 
 > *"A scientist worthy of a lab coat should be able to make original discoveries while wearing a clown suit, or give a lecture in a high squeaky voice from inhaling helium. It is written nowhere in the math of probability theory that one may have no fun."*
 >
@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
 
 ## Venue, date and time
 
-Basic Statistics is the second half of the BSc (Hons) Biostats core module, and will run in Semester 1 of 2022. This workshop will take place from Monday 28 March to Friday 1 April from 8:30--15:30. There will be an assignment due about three weeks after the end of this module, as well as a test; these two marks will contribute 50% of the marks for the Biostats module. More on the assignment and test later.
+Basic Statistics is the second half of the BSc (Hons) BioStats BCB744 core module, and will run in Semester 1 of 2022. This workshop will take place from Monday 28 March to Friday 1 April from 8:30--15:30. There will be an assignment due about three weeks after the end of this module, as well as a test; these two marks will contribute 50% of the marks for the BioStats module. More on the assignment and test later.
 
 ## Course outline
 
@@ -59,7 +59,9 @@ The course content can broadly be classified into two parts: *Descriptive Statis
 
 Descriptive statistics and their associated statistical and graphical data summaries will be covered in Chapters 3 and 4. In Chapter 5 we will introduce the concepts of data distributions, knowledge of which is required to select the most appropriate inferential statistical methods.
 
-Chapters 6-15 are about inferential statistics. Inferential tests allow us to evaluate hypotheses within a framework of probabalistic theory, which helps us infer the nature of a 'population' based on a smaller represenative set of samples. In partiucular, we can infer whether the property under scrutiny (arrived at by means of a designed experiment or a directed sampling programme) occured as a result of deterministic influences, or whether it is as a result of chance.
+Chapters 6-13 are about inferential statistics. Inferential tests allow us to evaluate hypotheses within a framework of probabalistic theory, which helps us infer the nature of a 'population' based on a smaller represenative set of samples. In partiucular, we can infer whether the property under scrutiny (arrived at by means of a designed experiment or a directed sampling programme) occured as a result of deterministic influences, or whether it is as a result of chance.
+
+> **NOTE:** I will not be covering everything in these notes, but will only have time to focus on the main points. I hope that by providing longer notes than necessary, it is a resource you can work through by yourself after the workshop.
 
 ## About this Workshop
 

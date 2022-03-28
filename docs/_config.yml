@@ -5,5 +5,5 @@ plugins:
 show_downloads: true
 markdown: kramdown
 title: Basic Statistics in R
-description: By Prof. AJ Smit, BCB, UWC
+description: © Prof. AJ Smit, BCB, UWC
 
