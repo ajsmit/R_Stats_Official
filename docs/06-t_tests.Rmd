@@ -522,6 +522,6 @@ But why though? As is often the case in life, and science is no exception, answe
 
 ## Exercises
 
-> **Exercise 1** Find or create your own normally distributed data and think of a hypothesis you could use a t-test for. Write out the hypothesis, test it, and write a one sentence conclusion for it. Provide all of the code used to accomplish this.
+> **Exercise 1** Use a suitable R function to generate samples of normal data. Think of a hypothesis you could use a t-test for. Write out the hypothetical hypothesis, test it, and write a one sentence conclusion for it. Provide all of the code used to accomplish this.
 
-> **Exercise 2** Do the same as Exercise 1, but for probability data.
+> **Exercise 2** Search for a built-in R dataset suitable for a t-test. Which t-test is appropriate for testing hypotheses about these data? Write down the hypothesis and test it.

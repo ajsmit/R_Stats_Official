@@ -55,6 +55,10 @@ Note that this gives us the number of all of the chicks in the experiment, irres
 
 > **Task 1:** Figure out the number of chicks in each of the feed categories.
 
+In biology we hope to have data that follow a normal (Gaussian) distribution. As we shall see later, most statistical inferences depend on the data conforming to normality. Normal data have these properties:
+
+<img src="Resources/Standard_deviation_diagram.png" alt="Normal distribution" class="center" width="50%"/>
+
 ## Measures of central tendency
 
 | Statistic | Function     | Package   |
