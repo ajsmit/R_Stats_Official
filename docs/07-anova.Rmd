@@ -134,7 +134,7 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 
 **When the sample size changes:**
 
-<video width="400" height="300" controls>
+<video width="400" controls>
 
 <source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_n_slide.mp4">
 
@@ -142,7 +142,7 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 
 **When the mean of a sample changes:**
 
-<video width="400" height="300" controls>
+<video width="400" controls>
 
 <source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_mean_slide.mp4">
 
@@ -150,13 +150,11 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 
 **When the variance of a sample changes:**
 
-<video width="400" height="300" controls>
+<video width="400" controls>
 
 <source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_sd_slide.mp4">
 
 </video>
-
-<!-- -   When the [variance](Resources/aov_n_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_n_slide.mp4" type="video/mp4"> </video> of one sample increases -->
 
 ```{r anova-plot1, echo=FALSE, include=FALSE, eval=FALSE}
 library(animation)
