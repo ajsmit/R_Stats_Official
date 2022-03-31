@@ -365,4 +365,4 @@ ggarrange(vio1, vio2, vio3, vio4, ncol = 2, nrow = 2, labels = "AUTO")
 
 ## Exercises
 
-> **Exercise 1** Choose the *Ecklonia* dataset and create four distinctly different figures arranged neatly as four panels using **ggbubr**'s `ggarrange()`. Examples of different graphs to use can be seen earlier in this chapter.
+> **Exercise 1:** Choose the *Ecklonia* dataset and create four distinctly different figures arranged neatly as four panels using **ggpubr**'s `ggarrange()`. Examples of different graphs to use can be seen earlier in this chapter.
