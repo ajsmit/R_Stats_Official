@@ -4,10 +4,10 @@ author: "AJ Smit"
 date: "`r Sys.Date()`"
 output:
   rmdformats::readthedown:
-  self_contained: false
-  cards: false
+  self_contained: true
+  cards: true
   thumbnails: true
-  lightbox: false
+  lightbox: true
   gallery: true
   use_bookdown: true
   highlight: tango
@@ -128,11 +128,17 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 
 <!-- -   When the [mean](Resources/aov_mean_slide.mp4){width="400" height="300"} of one sample changes -->
 
-<source src="Resources/aov_mean_slide.mp4" type="video/mp4">
+<!-- <source src="Resources/aov_mean_slide.mp4" type="video/mp4"> -->
+
+<!-- </video> -->
+
+<video width="320" height="240" controls>
+
+<source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_mean_slide.mp4">
 
 </video>
 
--   When the [variance](Resources/aov_n_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_n_slide.mp4" type="video/mp4"> </video> of one sample increases
+<!-- -   When the [variance](Resources/aov_n_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_n_slide.mp4" type="video/mp4"> </video> of one sample increases -->
 
 ```{r anova-plot1, echo=FALSE, include=FALSE, eval=FALSE}
 library(animation)
