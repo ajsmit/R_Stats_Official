@@ -124,16 +124,17 @@ The output of `tukeyHSD()` shows us that pairwise comparisons of all of the grou
 
 Now that we've seen how to perform a single factor ANOVA, let's watch some animations that highlight how certain aspects of our data may affect our results.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/hjMx8EuyZJ8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+<!-- -   When the [sample size](Resources/aov_n_slide.mp4){width="400" height="300"} changes -->
 
--   When the [sample size](Resources/aov_n_slide.mp4){width="400" height="300"} changes
+<!-- -   When the [mean](Resources/aov_mean_slide.mp4){width="400" height="300"} of one sample changes -->
 
-<!-- -   When the [mean](Resources/aov_mean_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_mean_slide.mp4" type="video/mp4"> </video> of one sample changes -->
+<source src="Resources/aov_mean_slide.mp4" type="video/mp4">
 
-<!-- -   When the [variance](Resources/aov_sd_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_sd_slide.mp4" type="video/mp4"> </video> of one sample increases -->
+</video>
+
+-   When the [variance](Resources/aov_n_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_n_slide.mp4" type="video/mp4"> </video> of one sample increases
 
 ```{r anova-plot1, echo=FALSE, include=FALSE, eval=FALSE}
-library(tidyverse)
 library(animation)
 
 # Function that serves as the basis for the sliding ANOVA figures
@@ -217,7 +218,7 @@ animate_aov_n <- function() {
 }
 
 # system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
-system.time(saveVideo(animate_aov_n(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_n_slide.avi")) # ~73 seconds
+system.time(saveVideo(animate_aov_n(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_n_slide.mp4")) # ~73 seconds
 ```
 
 ```{r anova-plot3, echo=FALSE, include=FALSE, eval=FALSE}
@@ -251,7 +252,7 @@ animate_aov_mean <- function() {
 }
 
 # system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
-system.time(saveVideo(animate_aov_mean(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_mean_slide.avi")) # ~105 seconds
+system.time(saveVideo(animate_aov_mean(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_mean_slide.mp4")) # ~105 seconds
 ```
 
 ```{r anova-plot4, echo=FALSE, include=FALSE, eval=FALSE}
@@ -286,7 +287,7 @@ animate_aov_sd <- function() {
 }
 
 # system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
-system.time(saveVideo(animate_aov_sd(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_sd_slide.avi")) # ~89 seconds
+system.time(saveVideo(animate_aov_sd(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_sd_slide.mp4")) # ~89 seconds
 ```
 
 ### Multiple factors
