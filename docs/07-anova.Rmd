@@ -124,11 +124,7 @@ The output of `tukeyHSD()` shows us that pairwise comparisons of all of the grou
 
 Now that we've seen how to perform a single factor ANOVA, let's watch some animations that highlight how certain aspects of our data may affect our results.
 
-<video width="320" height="240" controls>
-
-<source src="Resources/aov_n_slide.mp4" type="video/mp4">
-
-</video>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hjMx8EuyZJ8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
 
 -   When the [sample size](Resources/aov_n_slide.mp4){width="400" height="300"} changes
 
@@ -543,4 +539,3 @@ teeth <- datasets::ToothGrowth
 ```
 
 > **Exercise 3** Find or generate your own data that lend themselves to being analysed by a two-way ANOVA. Generate suitable hypotheses about your data, and analyse it. Supplement your analysis by providing a suitable descriptive statistical summary and graph(s) of your data.
-
