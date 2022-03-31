@@ -94,9 +94,9 @@ chicks.aov1 <- aov(weight ~ Diet, data = filter(chicks, Time == 21))
 summary(chicks.aov1)
 ```
 
-> **Task:** What does the outcome say about the chicken masses? Which ones are different from each other?
->
-> **Task:** Devise a graphical display of this outcome.
+> **Task 1:** What does the outcome say about the chicken masses? Which ones are different from each other?
+
+> **Task 2:** Devise a graphical display of this outcome.
 
 If this seems too easy to be true, it's because we aren't quite done yet. You could use your graphical display to eyeball where the significant differences are, or we can turn to a more 'precise' approach. The next step one could take is to run a Tukey HSD test on the results of the ANOVA by wrapping `tukeyHSD()` around `aov()`:
 
@@ -106,15 +106,15 @@ TukeyHSD(chicks.aov1)
 
 The output of `tukeyHSD()` shows us that pairwise comparisons of all of the groups we are comparing.
 
-> **Task:** Look at the help file for this function to better understand what the output means.
->
-> **Task:** How does one interpret the results? What does this tell us about the effect that that different diets has on the chicken weights at Day 21?
->
-> **Task:** Figure out a way to plot the Tukey HSD outcomes.
->
-> **Task:** Why does the ANOVA return a significant result, but the Tukey test shows that not all of the groups are significantly different from one another?
->
-> **Task:** Produce a graphical display of the Tukey HSD result.
+> **Task 3:** Look at the help file for this function to better understand what the output means.
+
+> **Task 4:** How does one interpret the results? What does this tell us about the effect that that different diets has on the chicken weights at Day 21?
+
+> **Task 5:** Figure out a way to plot the Tukey HSD outcomes.
+
+> **Task 6:** Why does the ANOVA return a significant result, but the Tukey test shows that not all of the groups are significantly different from one another?
+
+> **Task 7:** Produce a graphical display of the Tukey HSD result.
 
 <!-- ```{r} -->
 
@@ -124,9 +124,17 @@ The output of `tukeyHSD()` shows us that pairwise comparisons of all of the grou
 
 Now that we've seen how to perform a single factor ANOVA, let's watch some animations that highlight how certain aspects of our data may affect our results.
 
--   When the [sample size](Resources/aov_n_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_n_slide.mp4" type="video/mp4"> </video> changes
--   When the [mean](Resources/aov_mean_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_mean_slide.mp4" type="video/mp4"> </video> of one sample changes
--   When the [variance](Resources/aov_sd_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_sd_slide.mp4" type="video/mp4"> </video> of one sample increases
+<video width="320" height="240" controls>
+
+<source src="Resources/aov_n_slide.mp4" type="video/mp4">
+
+</video>
+
+-   When the [sample size](Resources/aov_n_slide.mp4){width="400" height="300"} changes
+
+<!-- -   When the [mean](Resources/aov_mean_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_mean_slide.mp4" type="video/mp4"> </video> of one sample changes -->
+
+<!-- -   When the [variance](Resources/aov_sd_slide.mp4){width="400" height="300"} <video width="320" height="240" controls> <source src="Resources/aov_sd_slide.mp4" type="video/mp4"> </video> of one sample increases -->
 
 ```{r anova-plot1, echo=FALSE, include=FALSE, eval=FALSE}
 library(tidyverse)
@@ -289,9 +297,9 @@ system.time(saveVideo(animate_aov_sd(), interval = 0.1, ani.width = 600, video.n
 
 What if we have multiple grouping variables, and not just one? In the case of the chicken data, there is also time that seems to be having an effect.
 
-> **Task:** How is time having an effect?
->
-> **Task:** What hypotheses can we construct around time?
+> **Task 8:** How is time having an effect?
+
+> **Task 9:** What hypotheses can we construct around time?
 
 Let us look at some variations around questions concerning time. We might ask, at a particular time step, are there differences amongst the effect due to diet on chicken mass? Let's see when diets are starting the have an effect by examining the outcomes at times 0, 2, 10, and 21:
 
@@ -302,9 +310,9 @@ summary(aov(weight ~ Diet, data = filter(chicks, Time %in% c(10))))
 summary(aov(weight ~ Diet, data = filter(chicks, Time %in% c(21))))
 ```
 
-> **Task:** What do you conclude from the above series of ANOVAs?
->
-> **Task:** What problem is associated with running multiple tests in the way that we have done here?
+> **Task 10:** What do you conclude from the above series of ANOVAs?
+
+> **Task 11:** What problem is associated with running multiple tests in the way that we have done here?
 
 Or we may ask, regardless of diet (i.e. disregarding the effect of diet by clumping all chickens together), is time having an effect?
 
@@ -313,7 +321,7 @@ chicks.aov2 <- aov(weight ~ as.factor(Time), data = filter(chicks, Time %in% c(0
 summary(chicks.aov2)
 ```
 
-> **Task:** What do you conclude from the above ANOVA?
+> **Task 12:** What do you conclude from the above ANOVA?
 
 Or, to save ourselves a lot of time and reduce the coding effort, we may simply run a two-way ANOVA and look at the effects of `Diet` and `Time` simultaneously. To specify the different factors we put them in our formula and separate them with a `+`:
 
@@ -321,7 +329,7 @@ Or, to save ourselves a lot of time and reduce the coding effort, we may simply 
 summary(aov(weight ~ Diet + as.factor(Time), data = filter(chicks, Time %in% c(0, 21))))
 ```
 
-> **Task:** What question are we asking with the above line of code? What is the answer? Also, why did we wrap `Time` in `as.factor()`?
+> **Task 13:** What question are we asking with the above line of code? What is the answer? Also, why did we wrap `Time` in `as.factor()`?
 
 It is also possible to look at what the interaction effect between grouping variables (i.e. in this case the effect of time on diet---does the effect of time depend on which diet we are looking at?), and not just within the individual grouping variables. To do this we replace the `+` in our formula with `*`:
 
@@ -329,7 +337,7 @@ It is also possible to look at what the interaction effect between grouping vari
 summary(aov(weight ~ Diet * as.factor(Time), data = filter(chicks, Time %in% c(4, 21))))
 ```
 
-> **Task:** How do these results differ from the previous set?
+> **Task 14:** How do these results differ from the previous set?
 
 One may also run a post-hoc Tukey test on these results the same as for a single factor ANOVA:
 
@@ -337,7 +345,7 @@ One may also run a post-hoc Tukey test on these results the same as for a single
 TukeyHSD(aov(weight ~ Diet * as.factor(Time), data = filter(chicks, Time %in% c(20, 21))))
 ```
 
-> **Task:** Yikes! That's a massive amount of results. What does all of this mean, and why is it so verbose?
+> **Task 15:** Yikes! That's a massive amount of results. What does all of this mean, and why is it so verbose?
 
 <!--- #### About interaction terms --->
 
@@ -369,7 +377,7 @@ snakes.summary <- snakes %>%
 snakes.summary
 ```
 
-> **Task:** Something seems... off. What's going on here? Please explain this outcome.
+> **Task 16:** Something seems... off. What's going on here? Please explain this outcome.
 
 To fix this problem, let us ignore the grouping by both `snake` and `day`.
 
@@ -535,3 +543,4 @@ teeth <- datasets::ToothGrowth
 ```
 
 > **Exercise 3** Find or generate your own data that lend themselves to being analysed by a two-way ANOVA. Generate suitable hypotheses about your data, and analyse it. Supplement your analysis by providing a suitable descriptive statistical summary and graph(s) of your data.
+
