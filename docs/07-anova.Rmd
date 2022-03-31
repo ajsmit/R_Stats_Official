@@ -134,7 +134,7 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 
 **When the sample size changes:**
 
-<video width="320" height="240" controls>
+<video width="400" height="300" controls>
 
 <source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_n_slide.mp4">
 
@@ -142,7 +142,7 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 
 **When the mean of a sample changes:**
 
-<video width="320" height="240" controls>
+<video width="400" height="300" controls>
 
 <source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_mean_slide.mp4">
 
@@ -150,7 +150,7 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 
 **When the variance of a sample changes:**
 
-<video width="320" height="240" controls>
+<video width="400" height="300" controls>
 
 <source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_sd_slide.mp4">
 
@@ -162,7 +162,7 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 library(animation)
 
 # Function that serves as the basis for the sliding ANOVA figures
-slide_fig <- function(df){
+slide_fig <- function(df) {
   
 # Calculate basic stats
 sub_stats <- df %>% 
@@ -242,7 +242,7 @@ animate_aov_n <- function() {
 }
 
 # system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
-system.time(saveVideo(animate_aov_n(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_n_slide.mp4")) # ~73 seconds
+system.time(saveVideo(animate_aov_n(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_n_slide.mp4", other.opts = "-pix_fmt yuv420p -b 300k")) # ~73 seconds
 ```
 
 ```{r anova-plot3, echo=FALSE, include=FALSE, eval=FALSE}
@@ -276,7 +276,7 @@ animate_aov_mean <- function() {
 }
 
 # system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
-system.time(saveVideo(animate_aov_mean(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_mean_slide.mp4")) # ~105 seconds
+system.time(saveVideo(animate_aov_mean(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_mean_slide.mp4", other.opts = "-pix_fmt yuv420p -b 300k")) # ~105 seconds
 ```
 
 ```{r anova-plot4, echo=FALSE, include=FALSE, eval=FALSE}
@@ -311,7 +311,7 @@ animate_aov_sd <- function() {
 }
 
 # system.time(saveGIF(animate_lm(), interval = 1, ani.width = 600, movie.name = "lm_rotate.gif")) ## ~4 seconds
-system.time(saveVideo(animate_aov_sd(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_sd_slide.mp4")) # ~89 seconds
+system.time(saveVideo(animate_aov_sd(), interval = 0.1, ani.width = 600, video.name = "Resources/aov_sd_slide.mp4", other.opts = "-pix_fmt yuv420p -b 300k")) # ~89 seconds
 ```
 
 ### Multiple factors
