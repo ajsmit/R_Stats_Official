@@ -132,9 +132,27 @@ Now that we've seen how to perform a single factor ANOVA, let's watch some anima
 
 <!-- </video> -->
 
+**When the sample size changes:**
+
+<video width="320" height="240" controls>
+
+<source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_n_slide.mp4">
+
+</video>
+
+**When the mean of a sample changes:**
+
 <video width="320" height="240" controls>
 
 <source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_mean_slide.mp4">
+
+</video>
+
+**When the variance of a sample changes:**
+
+<video width="320" height="240" controls>
+
+<source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/aov_sd_slide.mp4">
 
 </video>
 
