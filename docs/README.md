@@ -38,4 +38,4 @@ These links point to online resources such as datasets and R scripts in support 
 
 ## Day 3
 
-[Correlation](https://ajsmit.github.io/R_Stats_Official/09-correlation.html) \| [Confidence intervals](https://ajsmit.github.io/R_Stats_Official/10-confidence.html) \| [Assumptions](https://ajsmit.github.io/R_Stats_Official/11-transformations.html)
+[Correlation](https://ajsmit.github.io/R_Stats_Official/09-correlations.html) \| [Confidence intervals](https://ajsmit.github.io/R_Stats_Official/10-confidence.html) \| [Assumptions](https://ajsmit.github.io/R_Stats_Official/11-transformations.html)
