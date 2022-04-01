@@ -34,8 +34,8 @@ These links point to online resources such as datasets and R scripts in support 
 
 ## Day 2
 
-[t-Tests](https://ajsmit.github.io/R_Stats_Official/06-t_tests.html) \| [ANOVA](https://ajsmit.github.io/R_Stats_Official/07-anova.html) \| [Regression](https://ajsmit.github.io/R_Stats_Official/08-regression.html)
+[t-Tests](https://ajsmit.github.io/R_Stats_Official/06-t_tests.html) \| [ANOVA](https://ajsmit.github.io/R_Stats_Official/07-anova.html) \| [Regression](https://ajsmit.github.io/R_Stats_Official/08-regressions.html)
 
 ## Day 3
 
-[Correlation](https://ajsmit.github.io/R_Stats_Official/09-rorrelation.html) \| [Confidence intervals](https://ajsmit.github.io/R_Stats_Official/10-confidence.html) \| [Assumptions](https://ajsmit.github.io/R_Stats_Official/11-transformations.html)
+[Correlation](https://ajsmit.github.io/R_Stats_Official/09-correlation.html) \| [Confidence intervals](https://ajsmit.github.io/R_Stats_Official/10-confidence.html) \| [Assumptions](https://ajsmit.github.io/R_Stats_Official/11-transformations.html)
