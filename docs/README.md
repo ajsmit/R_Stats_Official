@@ -1,5 +1,7 @@
 These notes are provided to students at the BioStatistics in R (BCB744) Workshop, held at The University of the Western Cape, 28 March - 1 April 2022.
 
+**Authors:** Prof AJ Smit and Dr Robert Schlegel
+
 > *"An approximate answer to the right problem is worth a good deal more than an exact answer to an approximate problem."*
 >
 > --- John Tukey
