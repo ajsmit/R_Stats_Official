@@ -5,5 +5,5 @@ plugins:
 show_downloads: true
 markdown: kramdown
 title: Basic Statistics in R
-description: © Prof. AJ Smit (Biodiversity & Conservation Biology Department, University of the Wwestern Cape) and Dr. Robert Schlegel (Institut de la Mer de Villefranche, Sorbonne Université)
+description: © Prof. AJ Smit (Biodiversity & Conservation Biology Department, University of the Western Cape) and Dr. Robert Schlegel (Institut de la Mer de Villefranche, Sorbonne Université)
 
