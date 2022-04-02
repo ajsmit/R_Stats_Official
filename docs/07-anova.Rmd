@@ -71,7 +71,45 @@ Once we have filtered our data we may now perform the *t*-test. Traditionally th
 compare_means(weight ~ Diet, data = chicks_sub, method = "t.test")
 ```
 
+Unfortunately, the means are not provided as part of the outcome, but fret not! The means are:
+
+```{r}
+chicks_sub %>% 
+  group_by(Diet) %>% 
+  summarise(mean_mass = mean(weight))
+```
+
+Contrast the output with that of the atandard *t*-test function, `t.test()`:
+
+```{r}
+t.test(weight ~ Diet, data = chicks_sub)
+```
+
+The choice of whether to use `compare_means()` or `t.test()` is yours.
+
 As one may recall from the previous chapter, whenever we want to give a formula to a function in R, we use the `~`. The formula used above, `weight ~ Diet`, reads in plain English as "weight as a function of diet". This is perhaps easier to understand as "Y as a function of X". This means that we are assuming whatever is to the left of the `~` is the dependant variable, and whatever is to the right is the independent variable. We then tell `compare_means()` to run a *t*-test on our `chicks_sub` dataframe and it does the rest. We see in the output above that this function gives us a rather tidy read-out of the information we require to test a potential hypothesis. Let's take a moment to look through the help file for this function and see what all of this means. Did the Diet 1 and 2 produce significantly fatter birds?
+
+One could also supplement the output by producing a graph:
+
+```{r}
+library(ggstatsplot)
+## parametric t-test and box plot
+p1 <- ggbetweenstats(
+  data = chicks_sub,
+  x = Diet,
+  y = weight,
+  xlab = "Diet",
+  ylab = "Chick mass (g)",
+  plot.type = "box",
+  type = "p",
+  results.subtitle = FALSE,
+  conf.level = 0.95,
+  title = "t-test",
+  package = "ggsci",
+  palette = "nrc_npg"
+)
+p1
+```
 
 ## ANOVA
 
@@ -105,6 +143,29 @@ TukeyHSD(chicks.aov1)
 ```
 
 The output of `tukeyHSD()` shows us that pairwise comparisons of all of the groups we are comparing.
+
+We may also produce a graphical summary:
+
+```{r}
+## parametric t-test and box plot
+p2 <- ggbetweenstats(
+  data = filter(chicks, Time == 21),
+  x = Diet,
+  y = weight,
+  xlab = "Diet",
+  ylab = "Chick mass (g)",
+  plot.type = "box",
+  type = "parametric",
+  results.subtitle = TRUE,
+  pairwise.comparisons = TRUE,
+  pairwise.display = "non-significant",
+  conf.level = 0.95,
+  title = "ANOVA",
+  package = "ggsci",
+  palette = "nrc_npg"
+)
+p2
+```
 
 > **Task 3:** Look at the help file for this function to better understand what the output means.
 
