@@ -87,6 +87,8 @@ t.test(weight ~ Diet, data = chicks_sub)
 
 The choice of whether to use `compare_means()` or `t.test()` is yours.
 
+> **Note:** If you do decide to use the `compare_means()` function, please make sure that you know exactly which test is being used! This is, *t*-test for two means, or ANOVA for more than two means. In your Methods and Results you will want to report the name of the test being used internally within `compare_means()`, i.e. `t.test()` or `aov()`. Do NOT say you used the `compare_means()` function -- rather, know what it does!
+
 As one may recall from the previous chapter, whenever we want to give a formula to a function in R, we use the `~`. The formula used above, `weight ~ Diet`, reads in plain English as "weight as a function of diet". This is perhaps easier to understand as "Y as a function of X". This means that we are assuming whatever is to the left of the `~` is the dependant variable, and whatever is to the right is the independent variable. We then tell `compare_means()` to run a *t*-test on our `chicks_sub` dataframe and it does the rest. We see in the output above that this function gives us a rather tidy read-out of the information we require to test a potential hypothesis. Let's take a moment to look through the help file for this function and see what all of this means. Did the Diet 1 and 2 produce significantly fatter birds?
 
 One could also supplement the output by producing a graph:
