@@ -35,7 +35,7 @@ library(ggpubr)
 
 Whole big books have been written about Analysis of Variance (ANOVA). Although there are many ANOVA experimental designs available, biologists are taught to pay special attention to the design of experiments, and generally make sure that the experiments are fully factorial (in the case of two-way or higher ANOVAs) and balanced. For this reason we will focus in this Introductory Statistics course on one-way and factorial ANOVAs only.
 
-As *t*-tests, ANOVAs require that some assumptions are met:
+As [*t*-tests](https://ajsmit.github.io/R_Stats_Official/06-t_tests.html), ANOVAs require that some assumptions are met:
 
 -   Normally distributed data
 -   Homogeneity of variances
@@ -50,7 +50,7 @@ Rather than talking about *t*-tests and ANOVAs as separate things, let us acknow
 >
 > H1: Group A is different from group B.
 
-This is a scientific question in the simplest sense. Often, for basic inquiries such as that posed above, we need to see if one group differs significantly from another. The way in which we accomplish this is by looking at the mean and variance within a set of data compared against another similar set. In order to do so appropriately however we need to first assume that both sets of data are normally distributed, and that the variance found within each set of data is similar. These are the two primary assumptions we learned about in Chapter 6, and if they are met then we may use parametric tests. We will learn in Chapter 9 what we can do if these assumptions are not meant and we cannot adequately transform our data, meaning we will need to use non-parametric tests.
+This is a scientific question in the simplest sense. Often, for basic inquiries such as that posed above, we need to see if one group differs significantly from another. The way in which we accomplish this is by looking at the mean and variance within a set of data compared against another similar set. In order to do so appropriately however we need to first assume that both sets of data are normally distributed, and that the variance found within each set of data is similar. These are the two primary assumptions we learned about in the Chapter on [*t*-tests](https://ajsmit.github.io/R_Stats_Official/06-t_tests.html), and if they are met then we may use parametric tests. We will learn in the Chapter on [Transformations](https://ajsmit.github.io/R_Stats_Official/11-transformations.html) what we can do if these assumptions are not meant and we cannot adequately transform our data, meaning we will need to use non-parametric tests.
 
 ## Remember the *t*-test
 
@@ -65,7 +65,7 @@ chicks_sub <- chicks %>%
   filter(Diet %in% c(1, 2), Time == 21)
 ```
 
-Once we have filtered our data we may now perform the *t*-test. Traditionally this would be performed with `t.test()`, but recent developments in R have made any testing for the comparison of means more convenient by wrapping everything up into the one single function `compare_means()`. We may use only this one single function for many of the tests we will perform in this chapter as well as Chapter 9. To use `compare_means()` for a *t*-test we must simply specify this in the `method` argument, as seen below:
+Once we have filtered our data we may now perform the *t*-test. Traditionally this would be performed with `t.test()`, but recent developments in R have made any testing for the comparison of means more convenient by wrapping everything up into the one single function `compare_means()`. We may use only this one single function for many of the tests we will perform in this chapter as well as the Chapter on [*t*-tests](https://ajsmit.github.io/R_Stats_Official/06-t_tests.html). To use `compare_means()` for a *t*-test we must simply specify this in the `method` argument, as seen below:
 
 ```{r}
 compare_means(weight ~ Diet, data = chicks_sub, method = "t.test")
@@ -93,6 +93,11 @@ One could also supplement the output by producing a graph:
 
 ```{r}
 library(ggstatsplot)
+
+## since the confidence intervals for the effect sizes are computed using
+## bootstrapping, important to set a seed for reproducibility
+set.seed(13)
+
 ## parametric t-test and box plot
 p1 <- ggbetweenstats(
   data = chicks_sub,
@@ -110,6 +115,8 @@ p1 <- ggbetweenstats(
 )
 p1
 ```
+
+Notice above that we did not need to specify to use a *t*-test. The `ggbetweenstats()` function automatically determines if an independent samples *t*-test or a 1-way ANOVA is required based on whether there are two groups or three or more groups within the grouping (factor) variable.
 
 ## ANOVA
 
@@ -147,6 +154,8 @@ The output of `tukeyHSD()` shows us that pairwise comparisons of all of the grou
 We may also produce a graphical summary:
 
 ```{r}
+set.seed(666)
+
 ## parametric t-test and box plot
 p2 <- ggbetweenstats(
   data = filter(chicks, Time == 21),

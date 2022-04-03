@@ -7,7 +7,7 @@
 
         <meta name="author" content="AJ Smit" />
     
-        <meta name="date" content="2022-03-31" />
+        <meta name="date" content="2022-04-03" />
     
     <title>Inferences about one or two populations</title>
 
@@ -1655,7 +1655,7 @@ populations</a></h2>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
                   <p class="author"><span class="glyphicon glyphicon-user"></span> AJ
 Smit</p>
-                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 2022-03-31</p>
+                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 2022-04-03</p>
           </div>
    </div>
      
@@ -1913,6 +1913,9 @@ R&gt;   &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;
 R&gt; 1 A            8.72       0.375
 R&gt; 2 B            3.97       0.461</code></pre>
 <p>Do these data meet our assumptions? How do we know this?</p>
+<p>If the tests for some or all of the assumptions fail, refer to the
+Chapter on <a href="https://ajsmit.github.io/R_Stats_Official/11-transformations.html">Assumptions</a>
+to see how to proceed.</p>
 <p>Once we have tested our assumptions we may perform a <em>t</em>-test
 to ascertain whether or not our samples are significantly different from
 one another. The base R function for this is <code>t.test()</code>;
@@ -1996,16 +1999,15 @@ two potential population means. Does this help now to illustrate the
 results of our one-sample <em>t</em>-tests?</p>
 <div id="one-sided-one-sample-t-tests" class="section level3">
 <h3>One-sided one-sample <em>t</em>-tests</h3>
-<p>As we may remember from Chapter 5, a distribution has two tails. When
-we are testing for significance we are generally looking for a result
-that lays in the far end of either of these tails. Occasionally,
-however, we may want to know if the result lays specifically in one of
-the tails. Explicitly the leading or trailing tail. For example, is the
-mean value of our sample population significantly <em>greater than</em>
-the value <span class="math inline">\(\mu\)</span>? Or, is the mean
-value of our sample population significantly <em>less than</em> the
-value <span class="math inline">\(\mu\)</span>? To specify this in R we
-must add an argument as seen below:</p>
+<p>Remember that a normal distribution has two tails. When we are
+testing for significance we are generally looking for a result that lays
+in the far end of either of these tails. Occasionally, however, we may
+want to know if the result lays specifically in one of the tails.
+Explicitly the leading or trailing tail. For example, is the mean value
+of our sample population significantly <em>greater than</em> the value
+<span class="math inline">\(\mu\)</span>? Or, is the mean value of our
+sample population significantly <em>less than</em> the value <span class="math inline">\(\mu\)</span>? To specify this in R we must add an
+argument as seen below:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check against the trailing tail</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(r_one<span class="sc">$</span>dat, <span class="at">mu =</span> <span class="dv">30</span>, <span class="at">alternative =</span> <span class="st">&quot;less&quot;</span>)</span></code></pre></div>
 <pre><code>R&gt; 
@@ -2153,10 +2155,6 @@ Another way of stating this is that the value of <code>dat</code>
 depends on the grouping it belong to (<code>A</code> or <code>B</code>).
 We will see this same formula notation cropping up later under ANOVAs,
 linear models, etc.</p>
-<p>Now that we have seen the nitty gritty of how a t-test is meant to
-work, click <a href>here</a> to watch a visualisation that
-demonstrates how the relationships between two different sample sets
-(based on their mean and variance) influence the results.</p>
 <blockquote>
 <p><strong>TASK:</strong> Create a visualisation to graphically
 demonstrate the outcome of this <em>t</em>-test.</p>
@@ -2510,6 +2508,8 @@ that there are no outliers.</li>
 measurements of mass at two different sites. Before we can run our
 one-sided <em>t</em>-test we must meet the last two assumptions. Lucky
 us, we have a function tat will do that automagically.</p>
+<p>Please refer to the Chapter on <a href="https://ajsmit.github.io/R_Stats_Official/11-transformations.html">Assumptions</a>
+to see what to do if the assumptions fail.</p>
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>ecklonia_sub <span class="sc">%&gt;%</span> </span>
 <span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(site) <span class="sc">%&gt;%</span> </span>
 <span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">stipe_mass_var =</span> <span class="fu">two_assum</span>(value)[<span class="dv">1</span>],</span>
