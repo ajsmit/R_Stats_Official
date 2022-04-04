@@ -200,6 +200,17 @@ ggplot(data = faithful, aes(x = waiting, y = eruptions)) +
        y = "Eruption duration (minutes)")
 ```
 
+<!-- The **ggpubr** package also provides an option for plotting a linear regression with anotations: -->
+
+```{r, eval = FALSE, echo = FALSE}
+library(ggpubr)
+ggplot(data = faithful, aes(x = waiting, y = eruptions)) +
+        geom_smooth(method = "lm", colour = "salmon") +
+        geom_point() +
+        stat_regline_equation(label.x = 40, label.y = 6) +
+        stat_cor(aes(label = ..rr.label..), label.x = 40, label.y = 5.7)
+```
+
 ### Predicting from the linear model
 
 Knowing $\alpha$ and $\beta$ allows us to predict what the eruption duration will be for a certain amount of waiting. Since the slope of the line is positive we can expect that the longer the waiting time is between eruptions the longer the eruption would be. But how can we quantify this? We start by extracting the coefficients (both the intercept and the regression coefficient). Then we use these values to reassemble the regression equation that we have written out above (i.e., $eruption_{n}=\beta \cdot waiting_{n}+\alpha+\epsilon$). Here's how:
