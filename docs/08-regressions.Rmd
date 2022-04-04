@@ -38,7 +38,13 @@ The regression parameters $\alpha$ and $\beta$ are determined by *minimising the
 
 $$error~SS=\sum_{i=1}^{n}(y_{i}-\hat{y}_{i})^{2}$$
 
-To see an animation demonstrating this click [here](https://github.com/ajsmit/R_Stats_Official/blob/main/Resources/lm_rotate.avi).
+Here is an animation demonstrating the principle of minimising the error sum of squares:
+
+<video width="400" controls>
+
+<source type="video/mp4" src="https://ajsmit.github.io/R_Stats_Official//Resources/lm_rotate.avi">
+
+</video>
 
 ```{r, echo=FALSE, eval=FALSE, include=FALSE}
 library(tidyverse)
@@ -148,7 +154,7 @@ animate_lm <- function() {
 system.time(saveVideo(animate_lm(), interval = 0.01, ani.width = 600, video.name = "../Resources/lm_rotate.mp4")) #~553 seconds
 ```
 
-We will demonstrate the principle behind a simple linear regression by using the built-in dataset `faithful`. According to the R help file for the data, the dataset describes the "Waiting time between eruptions and the duration of the eruption for the Old Faithful geyser in Yellowstone National Park, Wyoming, USA."
+We will demonstrate the principle behind the implementation of a simple linear regression by using the built-in dataset `faithful`. According to the R help file for the data, the dataset describes the "Waiting time between eruptions and the duration of the eruption for the Old Faithful geyser in Yellowstone National Park, Wyoming, USA."
 
 ```{r faithful-head, echo=TRUE, include=TRUE}
 head(faithful)
