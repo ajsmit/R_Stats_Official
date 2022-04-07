@@ -308,11 +308,34 @@ predict(eruption.lm, pred.val, interval = "prediction")
 
 The intervals are wider. The difference between confidence and prediction intervals is subtle and requires some philosophical consideration. In practice, if you use these intervals to make inferences about the population from which the samples were drawn, use the prediction intervals. If you instead want to describe the samples which you have taken, use the confidence intervals.
 
+## Diagnostic plots for examining the fit of a linear model
+
+We may use several kinds of graphical displays to test the suitability of linear models for describing relationships in our data.
+
 ### Residual plot
+
+A residual plot shows the residuals (values predicted by the linear model ($\hat{y}$) *minus* the observed values ($y$)) on the *y*-axis and the independent ($x$) variable on the *x*-axis. Points in a residual plot that are randomly dispersed around the horizontal axis indicates a linear regression model that is appropriate for the data. If this simple 'test' fails, a nonlinear model might be more appropriate, or one might transform the data to normality (assuming that the non-normality of the data is responsible for the non-random dispersal above and below the horizontal line).
 
 ### Standardised residual
 
-### Normal probability plot of residuals
+We may use a plot of the residuals vs. the fitted values, which is helpful for detecting heteroscedasticity -- e.g. a systematic change in the spread of residuals over a range of predicted values.
+
+### Normal probability plot of residuals (Normal Q-Q plot)
+
+Let see all these plots in action for the Old Faithful data. The package **ggfortify** has a convenient function to automagically make all of these graphs:
+
+```{r}
+library(ggfortify)
+autoplot(lm(eruptions ~ waiting, data = faithful), label.size = 3,
+         col = "red3", shape = 10, smooth.colour = 'blue3')
+```
+
+```{r}
+ggplot(data = faithful, aes(x = eruptions, y = fitted(eruption.lm))) +
+  geom_point(col = "red3", shape = 10) +
+  geom_smooth(method = "lm", col = "blue3") +
+  labs(x = "Fitted eruption time (min)", y = "Observed eruption time (min)")
+```
 
 ## Using an additional categorical variable
 
