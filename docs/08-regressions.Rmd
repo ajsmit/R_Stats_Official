@@ -310,7 +310,7 @@ The intervals are wider. The difference between confidence and prediction interv
 
 ## Using an additional categorical variable
 
-We say in the ANOVA chapter how we could add a categorical variable to a regression -- or rather, we saw how we could had a continuous co-variate to an ANOVA. Whichever way we look at it, the analysis is the same. This is called an Analysis of Covariance, or ANCOVA.
+We saw in the ANOVA chapter how we could add a categorical variable to a regression -- or rather, we saw how we could had a continuous co-variate to an ANOVA. Whichever way we look at it, the analysis is the same. This is called an Analysis of Covariance, or ANCOVA.
 <!-- -   When you use a categorical variable, in R the intercept represents the default position for a given value in the categorical column. Every other value then gets a modifier to the base prediction. -->
 
 <!-- for example the iris data set -->
@@ -323,7 +323,7 @@ We may use several kinds of graphical displays to test the suitability of linear
 
 > **Exercise 1:** Please write a report on how to use diagnistic plots to show if the assumptions of normality and heteroscedasticity are being met in a regression analysis. The kinds of diagnostic plots I have in mind include, for example, graphs of Residuals vs Fitted values, Normal Q-Q plots, Scale-Location plots, and plots of Residuals vs Leverage. Produce the necessary graphs using built-in functions, and for two of them also construct them by hand (i.e. manually creating each of the steps that's included in tbe built-in functions, and then assembling the graphs from scratch). Apply the analysis on your own data (e.g. using the built-in datasets available within R), and discuss how to interpret them.
 >
-> **Hint:** One can apply the `plot()` function to the regression model onject, or there are some functions in the **gg_diagnose** package. In fact, there are many, many ways of doing it.
+> **Hint:** One can apply the `plot()` function to the regression model object, or there are some functions in the **gg_diagnose** package. In fact, there are many, many ways of doing it.
 
 <!-- ### Residual plot -->
 
