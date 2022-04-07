@@ -173,7 +173,7 @@ summary(eruption.lm)
 
 ### The intercept
 
-The intercept is the best estimate of the starting point of the fitted line on the lefthand side of the graph. You will notice that there is also an estimate for the standard error of the estimate for the intercept.
+The intercept is the best estimate of the starting point of the fitted line on the left-hand side of the graph. You will notice that there is also an estimate for the standard error of the estimate for the intercept.
 
 ### The regression coefficient
 
@@ -284,7 +284,7 @@ We can decide whether there is any significant relationship (slope) of $y$ on $x
 
 In the Old Faithful data, the *p*-value associated with `waiting` is less than 0.05 and we therefore reject the null hypothesis that $\beta=0$. So, there is a significant linear relationship of eruption duration on the waiting time between eruptions.
 
-> **Question:** Note that there is also a hypothesis test in the `(Intercept)` row. What does this do?
+> **Task 1:** Note that there is also a hypothesis test in the `(Intercept)` row. What does this do?
 
 ### Confidence interval for linear regression
 
@@ -308,37 +308,103 @@ predict(eruption.lm, pred.val, interval = "prediction")
 
 The intervals are wider. The difference between confidence and prediction intervals is subtle and requires some philosophical consideration. In practice, if you use these intervals to make inferences about the population from which the samples were drawn, use the prediction intervals. If you instead want to describe the samples which you have taken, use the confidence intervals.
 
+## Using an additional categorical variable
+
+We say in the ANOVA chapter how we could add a categorical variable to a regression -- or rather, we saw how we could had a continuous co-variate to an ANOVA. Whichever way we look at it, the analysis is the same. This is called an Analysis of Covariance, or ANCOVA.
+<!-- -   When you use a categorical variable, in R the intercept represents the default position for a given value in the categorical column. Every other value then gets a modifier to the base prediction. -->
+
+<!-- for example the iris data set -->
+
 ## Diagnostic plots for examining the fit of a linear model
 
 We may use several kinds of graphical displays to test the suitability of linear models for describing relationships in our data.
 
-### Residual plot
+## Exercise
 
-A residual plot shows the residuals (values predicted by the linear model ($\hat{y}$) *minus* the observed values ($y$)) on the *y*-axis and the independent ($x$) variable on the *x*-axis. Points in a residual plot that are randomly dispersed around the horizontal axis indicates a linear regression model that is appropriate for the data. If this simple 'test' fails, a nonlinear model might be more appropriate, or one might transform the data to normality (assuming that the non-normality of the data is responsible for the non-random dispersal above and below the horizontal line).
+> **Exercise 1:** Please write a report on how to use diagnistic plots to show if the assumptions of normality and heteroscedasticity are being met in a regression analysis. The kinds of diagnostic plots I have in mind include, for example, graphs of Residuals vs Fitted values, Normal Q-Q plots, Scale-Location plots, and plots of Residuals vs Leverage. Produce the necessary graphs using built-in functions, and for two of them also construct them by hand (i.e. manually creating each of the steps that's included in tbe built-in functions, and then assembling the graphs from scratch). Apply the analysis on your own data (e.g. using the built-in datasets available within R), and discuss how to interpret them.
+>
+> **Hint:** One can apply the `plot()` function to the regression model onject, or there are some functions in the **gg_diagnose** package. In fact, there are many, many ways of doing it.
 
-### Standardised residual
+<!-- ### Residual plot -->
 
-We may use a plot of the residuals vs. the fitted values, which is helpful for detecting heteroscedasticity -- e.g. a systematic change in the spread of residuals over a range of predicted values.
+<!-- A residual plot shows the residuals (values predicted by the linear model ($\hat{y}$) *minus* the observed values ($y$)) on the *y*-axis and the independent ($x$) variable on the *x*-axis. Points in a residual plot that are randomly dispersed around the horizontal axis indicates a linear regression model that is appropriate for the data. If this simple 'test' fails, a nonlinear model might be more appropriate, or one might transform the data to normality (assuming that the non-normality of the data is responsible for the non-random dispersal above and below the horizontal line). -->
 
-### Normal probability plot of residuals (Normal Q-Q plot)
+<!-- ### Standardised residual -->
 
-Let see all these plots in action for the Old Faithful data. The package **ggfortify** has a convenient function to automagically make all of these graphs:
+<!-- We may use a plot of the residuals vs. the fitted values, which is helpful for detecting heteroscedasticity -- e.g. a systematic change in the spread of residuals over a range of predicted values. -->
 
-```{r}
+<!-- ### Normal probability plot of residuals vs. theoretical quantiles (Normal Q-Q plot) -->
+
+<!-- Q-Q plots identify the quantiles in your sample data and plot them against the quantiles of a theoretical distribution. For a normal distribution, the data points will fall along a straight diagonal line in a Q-Q plot. Although we tend to work with (or, at least, hope for) normal data in biology and ecology, other data distributions may also be encountered --- here too, we can use Q-Q plots to help decide if our data data plausibly comes from some other theoretical distribution, such as a binomial or exponential distribution. -->
+
+<!-- To demonstrate, let us turn to the `Iris` dataset. I'll do the Q-Q plot calculation 'by hand' to demonstrate how it works. First, we need to calculate the *z*-scores (i.e., we subtract the mean of all the data in the sample from each observation, then we divide by the standard deviation of all the data in our sample). This is called *centering* (subtracting the mean, thus the sample will now assume a mean of `0`) and *scaling* (dividing by the SD, and the SD of the sample will become `1`): -->
+
+```{r, echo=FALSE, eval=FALSE}
+ex <- iris %>% 
+  filter(Species == "setosa") %>% 
+  select(Sepal.Length) %>%
+  mutate(sl_std1 = (Sepal.Length - mean(Sepal.Length)) / sd(Sepal.Length)) %>% 
+  as.vector()
+```
+
+<!-- The same might be achieved more easily through the use of the `scale()` function: -->
+
+```{r, echo=FALSE, eval=FALSE}
+ex <- ex %>% 
+  mutate(sl_std2 = scale(Sepal.Length))
+
+head(ex)
+```
+
+<!-- Let's check if the mean is `0` and the SD is `1`: -->
+
+```{r, echo=FALSE, eval=FALSE}
+mean(ex$sl_std1)
+sd(ex$sl_std1)
+```
+
+<!-- As close as can be! -->
+
+<!-- Now we rank them from small to large: -->
+
+```{r, echo=FALSE, eval=FALSE}
+ex <- ex %>% 
+  arrange(sl_std1)
+
+head(ex)
+```
+
+<!-- To make the Q-Q plot, we need to plot our standardised data (on *y*) versus data for an expected normal distribution (on *x*). We can create such data using the `rnorm()` function: -->
+
+```{r, echo=FALSE, eval=FALSE}
+ex <- ex %>% 
+  mutate(x_dat = qnorm(sl_std1))
+
+ggplot(data = ex, aes(x = x_dat, y = sl_std1)) +
+  geom_point(col = "red3", shape = 10) +
+  geom_smooth(method = "lm", col = "black", se = FALSE) +
+  labs(x = "Theoretical quantiles", y = "Sample quantiles")
+```
+
+<!-- But don't fret. There is an easy way to do this: -->
+
+```{r, echo=FALSE, eval=FALSE}
+library("car")
+qqPlot(ex$Sepal.Length)
+```
+
+<!-- Let see all these plots in action for the Old Faithful data. The package **ggfortify** has a convenient function to automagically make all of these graphs: -->
+
+```{r, echo=FALSE, eval=FALSE}
 library(ggfortify)
 autoplot(lm(eruptions ~ waiting, data = faithful), label.size = 3,
          col = "red3", shape = 10, smooth.colour = 'blue3')
 ```
 
-```{r}
+```{r, echo=FALSE, eval=FALSE}
 ggplot(data = faithful, aes(x = eruptions, y = fitted(eruption.lm))) +
   geom_point(col = "red3", shape = 10) +
   geom_smooth(method = "lm", col = "blue3") +
   labs(x = "Fitted eruption time (min)", y = "Observed eruption time (min)")
 ```
 
-## Using an additional categorical variable
-
--   When you use a categorical variable, in R the intercept represents the default position for a given value in the categorical column. Every other value then gets a modifier to the base prediction.
-
-<!-- for example the iris data set -->
