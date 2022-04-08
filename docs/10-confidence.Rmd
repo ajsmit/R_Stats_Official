@@ -30,33 +30,33 @@ A confidence interval (CI) tells us within what range we may be certain to find 
 
 ```{r}
 Input <- ("
-Student  Grade     Teacher  Score  Rating
-a        Gr_1     Vladimir  80   7
-b        Gr_1     Vladimir  90  10
-c        Gr_1     Vladimir  100  9
-d        Gr_1     Vladimir  70   5
-e        Gr_1     Vladimir  60   4
-f        Gr_1     Vladimir  80   8
-g        Gr_10    Vladimir  70   6
-h        Gr_10    Vladimir  50   5
-i        Gr_10    Vladimir  90  10
-j        Gr_10    Vladimir  70   8
-k        Gr_1     Sadam     80   7
-l        Gr_1     Sadam     90   8
-m        Gr_1     Sadam     90   8
-n        Gr_1     Sadam     80   9
-o        Gr_10    Sadam     60   5
-p        Gr_10    Sadam     80   9
-q        Gr_10    Sadam     70   6
-r        Gr_1     Donald   100  10
-s        Gr_1     Donald    90  10
-t        Gr_1     Donald    80   8
-u        Gr_1     Donald    80   7
-v        Gr_1     Donald    60   7
-w        Gr_10    Donald    60   8
-x        Gr_10    Donald    80  10
-y        Gr_10    Donald    70   7
-z        Gr_10    Donald    70   7
+Student  Grade   Teacher   Score  Rating
+a        Gr_1    Vladimir  80     7
+b        Gr_1    Vladimir  90    10
+c        Gr_1    Vladimir 100     9
+d        Gr_1    Vladimir  70     5
+e        Gr_1    Vladimir  60     4
+f        Gr_1    Vladimir  80     8
+g        Gr_10   Vladimir  70     6
+h        Gr_10   Vladimir  50     5
+i        Gr_10   Vladimir  90    10
+j        Gr_10   Vladimir  70     8
+k        Gr_1    Sadam     80     7
+l        Gr_1    Sadam     90     8
+m        Gr_1    Sadam     90     8
+n        Gr_1    Sadam     80     9
+o        Gr_10   Sadam     60     5
+p        Gr_10   Sadam     80     9
+q        Gr_10   Sadam     70     6
+r        Gr_1    Donald   100    10
+s        Gr_1    Donald    90    10
+t        Gr_1    Donald    80     8
+u        Gr_1    Donald    80     7
+v        Gr_1    Donald    60     7
+w        Gr_10   Donald    60     8
+x        Gr_10   Donald    80    10
+y        Gr_10   Donald    70     7
+z        Gr_10   Donald    70     7
 ")
 
 data <- read.table(textConnection(Input), header = TRUE)
