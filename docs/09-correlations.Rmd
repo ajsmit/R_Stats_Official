@@ -28,7 +28,7 @@ out.width = '70%'
 )
 ```
 
-A correlation is performed when we want to investigate potential relationships between variables from the same sample. This does not mean that one variable explains the other, we arrive at that through the use of regression, as seen in Chapter 8. Like all statistical tests, correlation requires a series of assumptions as well:
+A correlation is performed when we want to investigate the potential association between two continuous quantitative variables, or between some ordinal variables. We assume that the association is linear, like in a linear regression, and that one variable increases or decreases by a constant amount for a corresponding unit increase or decrease in the other variable. This does not suggest that one variable explains the other -- that is the purpose of regression, as seen in the [previous](https://ajsmit.github.io/R_Stats_Official/08-regressions.html) Chapter. Like all statistical tests, correlation requires a series of assumptions as well:
 
 -   pair-wise data
 -   absence of outliers
@@ -36,19 +36,23 @@ A correlation is performed when we want to investigate potential relationships b
 -   normality of distribution
 -   homoscedasticity
 -   level (type) of measurement
--   Continuous data (Pearson correlation)
--   Ordinal data (Spearman correlation)
+-   continuous data (Pearson correlation)
+-   ordinal data (Spearman correlation)
+
+The degree of association is measured by a correlation coefficient, denoted by $r$ (note, in a regression we use the $r^{2}$, which must not be confused for $r$). The $r$ statistic is sometimes called the correlation coefficient; it is a measure of linear association. The value for $r$ varies from -1 to 1, with 0 indicating that there is absolutely no association, 1 showing a perfect positive association, and -1 a perfect inverse correlation.
+
+## Pearson correlation
 
 In order to investigate correlations in biological data lets load the `ecklonia` dataset.
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # Load libraries
 library(tidyverse)
 library(ggpubr)
 library(corrplot)
 
 # Load data
-ecklonia <- read_csv("../data/ecklonia.csv")
+ecklonia <- read.csv("../data/ecklonia.csv")
 ```
 
 We will also create a subsetted version of our data by removing all of the categorical variables. If we have a dataframe where each column represents pair-wise continuous/ordinal measurements with all of the other columns we may very quickly and easily perform a much wider range of correlation analyses.
@@ -58,9 +62,7 @@ ecklonia_sub <- ecklonia %>%
   select(-species, - site, - ID)
 ```
 
-## Pearson correlation
-
-When the values we are comparing are continuous, we may use a Pearson test. This is the default and so requires little work on our end. The resulting statistic from this test is known as the correlation coefficient.
+When the values we are comparing are continuous, we may use a Pearson test. This is the default and so requires little work on our end. The resulting statistic from this test is known as the Pearson correlation coefficient:
 
 ```{r}
 # Perform correlation analysis on two specific variables
@@ -71,48 +73,7 @@ cor.test(x = ecklonia$stipe_length, ecklonia$frond_length,
          use = "everything", method = "pearson")
 ```
 
-Above we have tested the correlation between the length of *Ecklonia maxima* stipes and the length of their fronds. A perfect positive (negative) relationship would produce a value of 1 (-1), whereas no relationship would produce a value of 0. The result above, `cor = 0.65` is relatively strong. That being said, should our dataset contain multiple variables, as `ecklonia` does, we may investigate all of the correlations simultaneously. Remember that in order to do so we want to ensure that we may perform the same test on each of our paired variables. In this case we will use `ecklonia_sub` as we know that it contains only continuous data and so are appropriate for use with a Pearson test. By default R will use all of the data we give it and perform a Pearson test so we do not need to specify any further arguments. Note however that this will only output the correlation coefficients, and does not produce a full test of each correlation. This will however be useful for us to have just now.
-
-```{r}
-ecklonia_pearson <- cor(ecklonia_sub)
-ecklonia_pearson
-```
-
-> **Task:** What does the outcome of this test show?
-
-## Spearman rank correlation
-
-When the data we want to compare are not continuous, but rather ordinal, we will need to use a Spearman test. This is not often a test one uses in biology because we tend to want to compare continuous data within categories. In the code below we will add a column of ordinal data to our `ecklonia` data to so that we may look at this test.
-
-```{r}
-# Create ordinal data
-ecklonia$length <- as.numeric(cut((ecklonia$stipe_length+ecklonia$frond_length), breaks = 3))
-
-# Run test on any variable
-cor.test(ecklonia$length, ecklonia$digits)
-```
-
-> **Task:** How else might we use this?
-
-## Kendall rank correlation
-
-This test will work for both continuous and ordinal data. A sort of dealers choice of correlation tests. It's main purpose is to allow us to perform a correlation on non-normally distributed data. Let's look at the normality of our `ecklonia` variables and pull out those that are not normal in order to see how the results of this test may differ from our Pearson tests.
-
-```{r}
-ecklonia_norm <- ecklonia_sub %>%
-  gather(key = "variable") %>%
-  group_by(variable) %>%
-  summarise(variable_norm = as.numeric(shapiro.test(value)[2]))
-ecklonia_norm
-```
-
-From this analysis we may see that the values for primary blade length are not normally distributed. In order to make up for this violation of our assumption of normality we may use the Spearman test.
-
-```{r}
-cor.test(ecklonia$primary_blade_length, ecklonia$primary_blade_width, method = "kendall")
-```
-
-## One panel visual
+Above we have tested the correlation between the length of *Ecklonia maxima* stipes and the length of their fronds. A perfect positive (negative) relationship would produce a value of 1 (-1), whereas no relationship would produce a value of 0. The result above, `cor = 0.65` is relatively strong.
 
 As is the case with everything else we have learned thus far, a good visualisation can go a long way to help us understand what the statistics are doing. Below we visualise the stipe length to frond length relationship.
 
@@ -126,26 +87,83 @@ ggplot(data = ecklonia, aes(x = stipe_length, y = frond_length)) +
   geom_smooth(method = "lm", colour = "grey90", se = F) +
   geom_point(colour = "mediumorchid4") +
   geom_label(x = 300, y = 240, label = r_print) +
-  labs(x = "Stipe length (cm)", y = "Frond length (cm)") +
-  theme_pubclean()
+  labs(x = "Stipe length (cm)", y = "Frond length (cm)")
 ```
 
 Just by eye-balling this scatterplot it should be clear that these data tend to increase at a roughly similar rate. Our Pearson r value is an indication of what that is.
 
-## Multiple panel visual
+Should our dataset contain multiple variables, as `ecklonia` does, we may investigate all of the correlations simultaneously. Remember that in order to do so we want to ensure that we may perform the same test on each of our paired variables. In this case we will use `ecklonia_sub` as we know that it contains only continuous data and so are appropriate for use with a Pearson test. By default R will use all of the data we give it and perform a Pearson test so we do not need to specify any further arguments. Note however that this will only output the correlation coefficients, and does not produce a full test of each correlation. This will however be useful for us to have just now.
 
-But why stop at one panel? It is relatively straightforward to quickly plot correlation results for all of our variables in one go. In order to show which variables correlate most with which other variables all at once, without creating chaos, we will create what is known as a heat map. This visualisation uses a range of colours, usually blue to red, to demonstrate where more of something is. In this case, we use it to show where more correlation is occurring between morphometric properties of the kelp *Ecklonia maxima*.
+```{r}
+ecklonia_pearson <- round(cor(ecklonia_sub), 2)
+ecklonia_pearson
+write.csv(ecklonia_pearson, "../data/ecklonia_pearson.csv")
+```
+
+The output, called a pairwise correlation matrix, can be seen in Excel where it looks like this:
+
+![A correlation matrix showing Pearson's $r$.](Resources/correlation_matrix.png){width="95%"}
+
+> **Task 1:** What does the outcome of this test show? Please describe in detail how to interpret the output, and discuss the interesting characteristics of the correlation matrix.
+
+How would be visualise this matrix of correlations? It is relatively straightforward to quickly plot correlation results for all of our variables in one go. In order to show which variables associate most with which other variables all at once, without creating chaos, we will create what is known as a heat map. This visualisation uses a range of colours, usually blue to red, to demonstrate where more of something is. In this case, we use it to show where more correlation is occurring between morphometric properties of the kelp *Ecklonia maxima*.
 
 ```{r corr-plot2, fig.cap="Correlation plot showing the strength of all correlations between all variables as a scale from red (negative) to blue (positive)."}
 corrplot(ecklonia_pearson, method = "circle")
 ```
 
-> **Task:** What does the series of dark blue circles through the middle of this plot mean?
+> **Task 2:** What does the series of dark blue circles through the middle of this plot mean?
 
-> **Task:** Which morphometric properties correlate best/worst?
+> **Task 3:** Why does the scale bar on the right show the colour red?
 
-Slightly more involved, but much more useful, is the generation of a heat map using **`ggplot2`**.
+> **Task 4:** Which morphometric properties correlate best/worst?
+
+> **Task 5:** Browse the internet and find two or three other ways (hint: find other packages, for example) to visualise pairwise correlations, and create corresponding figures for the *Ecklonia* data.
+
+## Spearman rank correlation
+
+When the data we want to compare are not continuous, but rather ordinal, we will need to use Spearman's rank correlation. This is not often a test one uses in biology because we tend to want to compare continuous data within categories. In the code below we will add a column of ordinal data to our `ecklonia` data to so that we may look at this test.
+
+```{r}
+# Create ordinal data
+ecklonia$length <- as.numeric(cut((ecklonia$stipe_length + ecklonia$frond_length), breaks = 3))
+
+# What does this new column look like?
+head(select(ecklonia, c(species, site, stipe_length, frond_length, length)), 10)
+```
+
+> **Task 6:** Explain in writing what the code above does. Focus specifically on the line of code with the `cut()` function in it.
+
+Now let us correlate the new `length` variable with any one of the other variables:
+
+```{r}
+cor.test(ecklonia$length, ecklonia$digits, method = "spearman")
+```
+
+Note that unlike Pearson's correlation where the correlation coefficient is denoted by $r$, a Spearman correlation return the $\rho$ coefficient. The interpretation is the same is for Pearson's correlation coefficient, however.
+
+## Kendall rank correlation
+
+This test will work for both continuous and ordinal data. A sort of dealers choice of correlation tests. It's main purpose is to allow us to perform a correlation on non-normally distributed data. Let's look at the normality of our `ecklonia` variables and pull out those that are not normal in order to see how the results of this test may differ from our Pearson tests.
+
+```{r}
+ecklonia_norm <- ecklonia_sub %>%
+  gather(key = "variable") %>%
+  group_by(variable) %>%
+  summarise(variable_norm = as.numeric(shapiro.test(value)[2]))
+ecklonia_norm
+```
+
+> **Task 7:** Explain in written langauge what each line of the code, above, does.
+
+From this analysis we may see that the values for primary blade length are not normally distributed. In order to make up for this violation of our assumption of normality we may use the Kendall test.
+
+```{r}
+cor.test(ecklonia$primary_blade_length, ecklonia$primary_blade_width, method = "kendall")
+```
+
+Here the correlation coefficient is called Kendall's $\tau$ but it is interpreted as we would Pearson's.
 
 ## Exercises
 
-> **Exercise 1** Produce a heat map using **`ggplot2`**.
+> **Exercise 1** Find your own datasets suitable for i) Pearson's, ii) Spearman's, and iii) Kendall's correlations. For each, set the null and alternative hypotheses, apply the correlations, and create suitable visualisations. Ensure that one of the datasets lends itself to some pairwise comparisons.

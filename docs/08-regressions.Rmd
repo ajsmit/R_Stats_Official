@@ -321,7 +321,7 @@ We may use several kinds of graphical displays to test the suitability of linear
 
 ## Exercise
 
-> **Exercise 1:** Please write a report on how to use diagnistic plots to show if the assumptions of normality and heteroscedasticity are being met in a regression analysis. The kinds of diagnostic plots I have in mind include, for example, graphs of Residuals vs Fitted values, Normal Q-Q plots, Scale-Location plots, and plots of Residuals vs Leverage. Produce the necessary graphs using built-in functions, and for two of them also construct them by hand (i.e. manually creating each of the steps that's included in tbe built-in functions, and then assembling the graphs from scratch). Apply the analysis on your own data (e.g. using the built-in datasets available within R), and discuss how to interpret them.
+> **Exercise 1:** Please write a report on how to use diagnostic plots to show if the assumptions of normality and heteroscedasticity are being met in a regression analysis. The kinds of diagnostic plots I have in mind include, for example, graphs of Residuals vs Fitted values, Normal Q-Q plots, Scale-Location plots, and plots of Residuals vs Leverage. Produce the necessary graphs using built-in functions, and for two of them also construct them by hand (i.e. manually creating each of the steps that's included in tbe built-in functions, and then assembling the graphs from scratch). Apply the analysis on your own data (e.g. using the built-in datasets available within R), and discuss how to interpret them.
 >
 > **Hint:** One can apply the `plot()` function to the regression model object, or there are some functions in the **gg_diagnose** package. In fact, there are many, many ways of doing it.
 
