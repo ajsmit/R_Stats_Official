@@ -164,7 +164,7 @@ ecklonia <- read.csv("../data/ecklonia.csv")
 HarrellPlot(x = "site", y = "stipe_length", data = ecklonia, short = T)[1]
 ```
 
-> **Task 2:** There are a lot of settings for `HarrePlot()`, what do some of them do?
+> **Task 2:** There are a lot of settings for `HarrellPlot()`, what do some of them do?
 
 The above figure shows that the CI of the difference between stipe lengths (cm) at the two sites does not cross 0. This means that there is a significant difference between these two sample sets. But let's run a statistical test anyway to check the results.
 
