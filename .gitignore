@@ -5,6 +5,11 @@
 # Session Data files
 .RData
 
+# System files
+.DS_Store
+/docs/.DS_Store
+/private/.DS_Store
+
 # User-specific files
 .Ruserdata
 
