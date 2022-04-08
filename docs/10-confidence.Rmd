@@ -30,33 +30,33 @@ A confidence interval (CI) tells us within what range we may be certain to find 
 
 ```{r}
 Input <- ("
-Student  Grade     Teacher  Steps  Rating
-a        Gr_1     Putin     8000   7
-b        Gr_1     Putin     9000  10
-c        Gr_1     Putin    10000   9
-d        Gr_1     Putin     7000   5
-e        Gr_1     Putin     6000   4
-f        Gr_1     Putin     8000   8
-g        Gr_10    Putin     7000   6
-h        Gr_10    Putin     5000   5
-i        Gr_10    Putin     9000  10
-j        Gr_10    Putin     7000   8
-k        Gr_1     Sadam     8000   7
-l        Gr_1     Sadam     9000   8
-m        Gr_1     Sadam     9000   8
-n        Gr_1     Sadam     8000   9
-o        Gr_10    Sadam     6000   5
-p        Gr_10    Sadam     8000   9
-q        Gr_10    Sadam     7000   6
-r        Gr_1     Donald   10000  10
-s        Gr_1     Donald    9000  10
-t        Gr_1     Donald    8000   8
-u        Gr_1     Donald    8000   7
-v        Gr_1     Donald    6000   7
-w        Gr_10    Donald    6000   8
-x        Gr_10    Donald    8000  10
-y        Gr_10    Donald    7000   7
-z        Gr_10    Donald    7000   7
+Student  Grade     Teacher  Score  Rating
+a        Gr_1     Vladimir  80   7
+b        Gr_1     Vladimir  90  10
+c        Gr_1     Vladimir  100  9
+d        Gr_1     Vladimir  70   5
+e        Gr_1     Vladimir  60   4
+f        Gr_1     Vladimir  80   8
+g        Gr_10    Vladimir  70   6
+h        Gr_10    Vladimir  50   5
+i        Gr_10    Vladimir  90  10
+j        Gr_10    Vladimir  70   8
+k        Gr_1     Sadam     80   7
+l        Gr_1     Sadam     90   8
+m        Gr_1     Sadam     90   8
+n        Gr_1     Sadam     80   9
+o        Gr_10    Sadam     60   5
+p        Gr_10    Sadam     80   9
+q        Gr_10    Sadam     70   6
+r        Gr_1     Donald   100  10
+s        Gr_1     Donald    90  10
+t        Gr_1     Donald    80   8
+u        Gr_1     Donald    80   7
+v        Gr_1     Donald    60   7
+w        Gr_10    Donald    60   8
+x        Gr_10    Donald    80  10
+y        Gr_10    Donald    70   7
+z        Gr_10    Donald    70   7
 ")
 
 data <- read.table(textConnection(Input), header = TRUE)
@@ -71,19 +71,19 @@ Let us produce the confidence intervals using the traditional method for the gro
 library(rcompanion)
 # Ungrouped data are indicated with a 1 on the right side of the formula,
 # or the group = NULL argument; so, this produces the overall mean
-groupwiseMean(Steps ~ 1, data = data, conf = 0.95, digits = 3)
+groupwiseMean(Score ~ 1, data = data, conf = 0.95, digits = 3)
 
 # One-way data
-groupwiseMean(Steps ~ Grade, data = data, conf = 0.95, digits = 3)
+groupwiseMean(Score ~ Grade, data = data, conf = 0.95, digits = 3)
 
 # Two-way data
-groupwiseMean(Steps ~ Teacher + Grade, data = data, conf = 0.95, digits = 3)
+groupwiseMean(Score ~ Teacher + Grade, data = data, conf = 0.95, digits = 3)
 ```
 
 Now let us do it through bootstrapping:
 
 ```{r}
-groupwiseMean(Steps ~ Grade,
+groupwiseMean(Score ~ Grade,
               data = data,
               conf = 0.95,
               digits = 3,
@@ -95,7 +95,7 @@ groupwiseMean(Steps ~ Grade,
               percentile = FALSE,
               bca = TRUE)
 
-groupwiseMean(Steps ~ Teacher + Grade,
+groupwiseMean(Score ~ Teacher + Grade,
               data = data,
               conf = 0.95,
               digits = 3,
